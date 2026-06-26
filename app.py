@@ -6,7 +6,7 @@ st.set_page_config(page_title="App Thẩm Định Cho Vay Cá Nhân", layout="wi
 st.title("📊 HỆ THỐNG THẨM ĐỊNH CHO VAY KHÁCH HÀNG CÁ NHÂN")
 st.write("Nhập các thông tin dưới đây để hệ thống tự động đánh giá điều kiện cấp tín dụng.")
 
----
+st.markdown("---")
 
 # Chia giao diện thành 2 cột: Cột nhập liệu và Cột kết quả
 col1, col2 = st.columns([1, 1])
