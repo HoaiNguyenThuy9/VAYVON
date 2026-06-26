@@ -20,7 +20,7 @@ st.sidebar.info("Phòng Tín Dụng Khách Hàng Cá Nhân\n\nThực hiện bở
 
 # Hoặc nếu muốn hiển thị logo ngay trên đầu tiêu đề chính, bạn bỏ dấu thăng (#) ở dòng dưới:
 # st.image(URL_LOGO, width=200)
- ==============================================================================
+ ===============================================================================
 
 st.title("🏦 APP THẨM ĐỊNH CHO VAY ONLINE KHCN - THUY HOAI - ĐỀ TÀI 6")
 st.write("Hệ thống tự động thẩm định, phân tích rủi ro và phê duyệt tín dụng Khách hàng cá nhân.")
