@@ -3,6 +3,25 @@ import streamlit as st
 # Cấu hình trang web
 st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - THUY HOAI", layout="wide")
 
+# ==============================================================================
+# CHÈN LOGO VÀO ỨNG DỤNG
+# ==============================================================================
+# Cách 1: Chèn Logo online (Thay link ảnh bên dưới bằng link logo trường/ngân hàng của bạn)
+URL_LOGO = "https://www.streamlit.io/images/brand/streamlit-logo-secondary-colormark-darktext.png" 
+
+# Cách 2: Nếu bạn có file ảnh trong máy, hãy để file ảnh cùng thư mục với file app.py và dùng:
+# URL_LOGO = "logo_bdu.png" # Giải nén hoặc bỏ dấu thăng (#) nếu dùng ảnh trong máy
+
+# Hiển thị logo ở góc trên cùng của thanh SideBar (Thanh bên trái)
+st.sidebar.image(URL_LOGO, use_container_width=True)
+st.sidebar.markdown("---")
+st.sidebar.write("### 🏢 Đơn vị thẩm định")
+st.sidebar.info("Phòng Tín Dụng Khách Hàng Cá Nhân\n\nThực hiện bởi: THUY HOAI")
+
+# Hoặc nếu muốn hiển thị logo ngay trên đầu tiêu đề chính, bạn bỏ dấu thăng (#) ở dòng dưới:
+# st.image(URL_LOGO, width=200)
+# ==============================================================================
+
 st.title("🏦 APP THẨM ĐỊNH CHO VAY ONLINE KHCN - THUY HOAI - ĐỀ TÀI 6")
 st.write("Hệ thống tự động thẩm định, phân tích rủi ro và phê duyệt tín dụng Khách hàng cá nhân.")
 
@@ -35,14 +54,12 @@ with col2:
     SNPT = st.number_input("Số người phụ thuộc (Người):", min_value=0, value=1, step=1)
     PTMC = st.number_input("Gốc lãi khoản vay cũ phải trả hàng tháng (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
     
-    # --- CẤU PHẦN CIC CẢI TIẾN ---
     CIC = st.selectbox(
         "Xếp hạng nhóm nợ (Hệ thống CIC):",
         ["Nhóm 1 - Nợ đủ tiêu chuẩn", "Nhóm 2 - Nợ cần chú ý", "Nhóm 3 đến 5 - Nợ xấu"]
     )
     so_lan_tra_cham = st.number_input("Số lần trả chậm trong 12 tháng qua (Tờ khai CIC):", min_value=0, value=0, step=1)
     
-    # Hiển thị lý do trả chậm nếu số lần trả chậm > 0 hoặc thuộc Nhóm 2, Nhóm 3-5
     ly_do_tra_cham = "Không có trả chậm"
     if so_lan_tra_cham > 0 or CIC != "Nhóm 1 - Nợ đủ tiêu chuẩn":
         ly_do_tra_cham = st.selectbox(
@@ -62,7 +79,7 @@ if TG_Thang > 0:
     if hinh_thuc_tra == "Gốc đều, lãi giảm dần (Kỳ đầu cao nhất)":
         Lai_Thang_Dau = STV * (LSV / 12)
         PTMM = Goc_Hang_Thang + Lai_Thang_Dau
-    else:  # Annuity (Gốc lãi đều)
+    else:  
         r_monthly = LSV / 12
         if r_monthly > 0:
             PTMM = STV * (r_monthly * (1 + r_monthly)**TG_Thang) / ((1 + r_monthly)**TG_Thang - 1)
@@ -80,21 +97,16 @@ st.markdown("---")
 # --- PHẦN 3: XỬ LÝ LOGIC THẨM ĐỊNH KHI BẤM NÚT ---
 if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
     try:
-        # Tổng nghĩa vụ trả nợ hàng tháng
         Tong_No_Phai_Tra = PTMM + PTMC
-        
-        # Định mức chi phí sinh hoạt (Triệu đồng)
         CPSH_BAN_THAN = 5.0
         CPSH_PHU_THUOC = 3.5
         tong_chi_phi_sinh_hoat = CPSH_BAN_THAN + (SNPT * CPSH_PHU_THUOC)
         thu_nhap_rong = TN - tong_chi_phi_sinh_hoat
         
-        # Chỉ số tài chính
         DTI = Tong_No_Phai_Tra / TN if TN > 0 else 1.0
         LTV = STV / GTTSDB if GTTSDB > 0 else 1.0
         Tich_Luy_Con_Lai = thu_nhap_rong - PTMM
 
-        # Tabs hiển thị kết quả
         tab1, tab2, tab3 = st.tabs(["📈 Kết quả phân tích chỉ số", "📋 Hồ sơ & Nghĩa vụ dòng tiền", "⚠️ Khuyến nghị rủi ro"])
         
         with tab1:
@@ -107,26 +119,19 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
             st.markdown("---")
             st.write("### 🏁 KẾT LUẬN THẨM ĐỊNH TỰ ĐỘNG:")
             
-            # Thiết lập quy tắc chặn cứng (Hard-rules) có bổ sung lý do CIC
             rejection_reasons = []
             
-            # 1. Khối logic CIC & Lý do trả chậm
             if CIC == "Nhóm 3 đến 5 - Nợ xấu":
                 rejection_reasons.append("Khách hàng có nợ xấu lịch sử (Nhóm 3-5) trên hệ thống CIC.")
-            
             if CIC == "Nhóm 2 - Nợ cần chú ý":
                 if "Lý do chủ quan" in ly_do_tra_cham or "Lý do cố ý" in ly_do_tra_cham:
                     rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 do yếu tố chủ quan rủi ro cao: {ly_do_tra_cham}")
                 elif so_lan_tra_cham > 3:
                     rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 và tần suất trả chậm quá dày ({so_lan_tra_cham} lần).")
-            
             if "Lý do cố ý" in ly_do_tra_cham:
-                rejection_reasons.append("Hệ thống từ chối do phát hiện lịch sử khách hàng cố ý trốn tránh nghĩa vụ nợ hoặc đang tranh chấp.")
-            
+                rejection_reasons.append("Hệ thống từ chối do phát hiện lịch sử khách hàng cố ý trốn tránh nghĩa vụ nợ.")
             if CIC == "Nhóm 1 - Nợ đủ tiêu chuẩn" and so_lan_tra_cham > 5:
                 rejection_reasons.append(f"Tần suất trả chậm nghiêm trọng ({so_lan_tra_cham} lần) mặc dù đang giữ Nhóm 1.")
-
-            # 2. Các logic tài chính khác
             if DTI > 0.70:
                 rejection_reasons.append(f"Chỉ số DTI ({DTI * 100:.2f}%) vượt ngưỡng an toàn 70%.")
             if loai_vay != "Vay tiêu dùng tín chấp" and LTV > 0.70:
@@ -140,7 +145,6 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
             if nghe_nghiep == "Lao động tự do / Tạm thời" and loai_vay == "Vay tiêu dùng tín chấp":
                 rejection_reasons.append("Nghề nghiệp rủi ro cao, không có nguồn thu nhập ổn định để phê duyệt tín chấp.")
 
-            # Trả kết quả phê duyệt
             if len(rejection_reasons) == 0:
                 st.success("🎉 **CHẤP THUẬN CHO VAY (APPROVED)**")
                 st.balloons()
@@ -173,19 +177,16 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
 
         with tab3:
             st.write("### Đánh giá định tính & Giảm thiểu rủi ro:")
-            
-            # Cảnh báo dựa trên lý do trả chậm
             if "Lý do khách quan" in ly_do_tra_cham and CIC == "Nhóm 2 - Nợ cần chú ý":
-                st.warning("⚠️ **Lưu ý Thẩm định viên:** Khách hàng nợ Nhóm 2 nhưng do quên hoặc lỗi hệ thống. Có thể xem xét phê duyệt ngoại lệ (Vượt thẩm quyền cấp Đơn vị) nếu bổ sung được sao kê chứng minh thanh toán bù ngay sau đó.")
+                st.warning("⚠️ **Lưu ý Thẩm định viên:** Khách hàng nợ Nhóm 2 nhưng do quên hoặc lỗi hệ thống. Có thể xem xét phê duyệt ngoại lệ nếu bổ sung chứng minh thanh toán bù.")
             if "Lý do kỹ thuật" in ly_do_tra_cham:
-                st.info("ℹ️ Khách hàng chậm do chu kỳ lương công ty lệch ngày trả nợ ngân hàng. Khuyến nghị cơ cấu lại Ngày cấp tín dụng/Ngày trả nợ sang ngày 10 hàng tháng để khớp dòng tiền.")
-            
+                st.info("ℹ️ Khách hàng chậm do chu kỳ lương công ty lệch ngày trả nợ ngân hàng. Khuyến nghị cơ cấu lại Ngày cấp tín dụng/Ngày trả nợ.")
             if hon_nhan == "Đã kết hôn" and nguon_phu == "Không có":
-                st.warning("⚠️ Khách hàng đã kết hôn nhưng chưa đưa thu nhập của Vợ/Chồng vào nguồn thu bổ sung để giảm tỷ lệ DTI.")
+                st.warning("⚠️ Khách hàng đã kết hôn nhưng chưa đưa thu nhập của Vợ/Chồng vào nguồn thu bổ sung.")
             if nghe_nghiep == "Kinh doanh tự do / Chủ doanh nghiệp":
                 st.info("ℹ️ Cần thẩm định thực tế cơ sở kinh doanh để xác minh tính xác thực của dòng tiền thu nhập.")
             if len(rejection_reasons) == 0 and so_lan_tra_cham > 0:
-                st.warning(f"⚠️ Khách hàng có lịch sử trả chậm nhẹ ({so_lan_tra_cham} lần). Hệ thống phê duyệt nhưng khuyến nghị cài đặt trích nợ tự động (Auto-debit).")
+                st.warning(f"⚠️ Khách hàng có lịch sử trả chậm nhẹ ({so_lan_tra_cham} lần). Khuyến nghị cài đặt trích nợ tự động (Auto-debit).")
                                 
     except ZeroDivisionError:
         st.error("❌ Hệ thống không thể tính toán do có trường dữ liệu bằng 0 hoặc chưa hợp lệ.")
