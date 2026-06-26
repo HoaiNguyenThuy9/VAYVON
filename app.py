@@ -11,82 +11,124 @@ URL_LOGO = "https://www.streamlit.io/images/brand/streamlit-logo-secondary-color
 # Hiển thị Logo và thông tin tại thanh Sidebar bên trái
 st.sidebar.image(URL_LOGO, use_container_width=True)
 st.sidebar.markdown("---")
-st.sidebar.write("### 🏢 Đơn vị thẩm định")
-st.sidebar.info("Phòng Tín Dụng Khách Hàng Cá Nhân\n\nThực hiện bởi: THUY HOAI")
+st.sidebar.write("### 🏢 Hệ thống trực tuyến")
+st.sidebar.info("Cổng Đăng Ký Khoản Vay Tự Động\n\nKhách hàng: THUY HOAI")
 st.sidebar.markdown("---")
-st.sidebar.caption("Ứng dụng phục vụ Đề tài 6: Thẩm định cho vay đối với khách hàng cá nhân.")
+st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký vay trực tuyến của Khách hàng.")
 
 # ==============================================================================
 # TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG
 # ==============================================================================
-st.title("🏦 APP THẨM ĐỊNH CHO VAY ONLINE KHCN - THUY HOAI - ĐỀ TÀI 6")
-st.write("Hệ thống tự động thẩm định, phân tích rủi ro và phê duyệt tín dụng Khách hàng cá nhân.")
+st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
+st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
 
 st.markdown("---")
 
 # ==============================================================================
-# PHẦN 1: GIAO DIỆN NHẬP LIỆU (CHIA THÀNH 2 CỘT)
+# PHẦN 1: GIAO DIỆN NHẬP LIỆU (KHÁCH HÀNG TỰ ĐIỀN)
 # ==============================================================================
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("📋 1. Thông tin khoản vay đề xuất")
+    st.subheader("📋 1. Nhu cầu vay vốn của bạn")
     loai_vay = st.selectbox(
-        "Loại khoản vay:", 
-        ["Vay tiêu dùng tín chấp", "Vay mua Ô tô (Thế chấp)", "Vay mua Bất động sản (Thế chấp)", "Vay sản xuất kinh doanh"]
+        "Bạn muốn vay theo hình thức nào?", 
+        ["Vay tiêu dùng tín chấp (Không cần tài sản)", "Vay mua Ô tô (Thế chấp bằng xe)", "Vay mua Bất động sản (Thế chấp bằng đất/nhà)", "Vay sản xuất kinh doanh"]
     )
-    muc_dich = st.text_input("Mục đích vay cụ thể:", value="Mua nhà chung cư / Tiêu dùng gia đình")
+    muc_dich = st.text_input("Mục đích sử dụng số tiền này cụ thể là gì?", value="Mua nhà chung cư / Chi tiêu gia đình")
     
-    STV = st.number_input("Số tiền muốn vay (Triệu đồng):", min_value=0.0, value=100.0, step=10.0)
-    TGV = st.number_input("Thời gian vay (Số năm):", min_value=0.5, value=5.0, step=0.5)
-    LSV = st.number_input("Lãi suất cho vay (%/năm):", min_value=0.0, max_value=50.0, value=10.0, step=0.5) / 100
-    GTTSDB = st.number_input("Giá trị tài sản đảm bảo (Triệu đồng):", min_value=0.0, value=200.0, step=10.0)
+    STV = st.number_input("Số tiền bạn muốn vay (Triệu đồng):", min_value=0.0, value=100.0, step=10.0)
+    TGV = st.number_input("Thời gian bạn muốn trả góp (Số năm):", min_value=0.5, value=5.0, step=0.5)
+    LSV = st.number_input("Lãi suất ước tính (%/năm):", min_value=0.0, max_value=50.0, value=10.0, step=0.5) / 100
+    
+    # Ẩn/hiện ô nhập tài sản đảm bảo tùy thuộc vào loại hình vay
+    if "Không cần tài sản" in loai_vay:
+        GTTSDB = 0.0
+        st.caption("ℹ️ Bạn đang chọn vay tín chấp, không cần kê khai giá trị tài sản đảm bảo.")
+    else:
+        GTTSDB = st.number_input("Ước tính giá trị Tài sản bạn định thế chấp (Triệu đồng):", min_value=1.0, value=200.0, step=10.0)
     
     hinh_thuc_tra = st.selectbox(
-        "Hình thức trả nợ:", 
-        ["Gốc đều, lãi giảm dần (Kỳ đầu cao nhất)", "Gốc và lãi trả đều hàng tháng (Annuity)"]
+        "Bạn muốn trả nợ theo phương thức nào?", 
+        ["Gốc đều, lãi giảm dần (Kỳ đầu cao nhất, giảm dần về sau)", "Gốc và lãi chia đều cố định hàng tháng (Annuity)"]
     )
     nguon_chinh = st.selectbox(
-        "Nguồn trả nợ chính:", 
-        ["Lương từ công việc cố định", "Thu nhập từ sản xuất kinh doanh", "Thu nhập từ cho thuê tài sản"]
+        "Nguồn thu nhập chính để bạn trả nợ từ đâu?", 
+        ["Lương từ công việc cố định (Có HĐLĐ)", "Thu nhập từ hộ kinh doanh / Doanh nghiệp riêng", "Thu nhập từ việc cho thuê tài sản (Nhà, xe)", "Thu nhập tự do không cố định"]
     )
     nguon_phu = st.selectbox(
-        "Nguồn trả nợ phụ (Dự phòng):", 
-        ["Không có", "Thu nhập của người đồng vay (Vợ/Chồng)", "Tài sản tích lũy khác"]
+        "Bạn có nguồn thu nhập dự phòng nào khác không?", 
+        ["Không có", "Thu nhập bổ sung từ Vợ/Chồng", "Tiền gửi tiết kiệm / Tài sản tích lũy khác"]
     )
 
 with col2:
-    st.subheader("👤 2. Thông tin khách hàng & Uy tín (CIC)")
-    STKH = st.number_input("Số tuổi của khách hàng (Tuổi):", min_value=0, max_value=120, value=30, step=1)
-    hon_nhan = st.selectbox("Tình trạng hôn nhân:", ["Độc thân", "Đã kết hôn", "Ly hôn/Khác"])
-    nghe_nghiep = st.selectbox(
-        "Nghề nghiệp/Lĩnh vực làm việc:", 
-        ["Nhân viên văn phòng (HĐLĐ vô thời hạn)", "Kinh doanh tự do / Chủ doanh nghiệp", "Công chức / Viên chức nhà nước", "Lao động tự do / Tạm thời"]
+    st.subheader("👤 2. Thông tin cá nhân & Lịch sử tín dụng")
+    STKH = st.number_input("Số tuổi hiện tại của bạn (Tuổi):", min_value=0, max_value=120, value=30, step=1)
+    hon_nhan = st.selectbox("Tình trạng hôn nhân hiện tại:", ["Độc thân", "Đã kết hôn", "Ly hôn/Khác"])
+    
+    # Chuẩn hóa nghề nghiệp cho khách hàng dễ chọn
+    nghe_nghiep_mapping = {
+        "Nhân viên văn phòng (HĐLĐ vô thời hạn)": "Nhân viên văn phòng (Có HĐLĐ)",
+        "Kinh doanh tự do / Chủ doanh nghiệp": "Chủ cơ sở kinh doanh / Doanh nghiệp",
+        "Công chức / Viên chức nhà nước": "Làm việc tại cơ quan Nhà nước",
+        "Lao động tự do / Tạm thời": "Lao động tự do / Nghề nghiệp tạm thời"
+    }
+    nghe_chon = st.selectbox("Công việc hiện tại của bạn:", list(nghe_nghiep_mapping.keys()))
+    nghe_nghiep = nghe_nghiep_mapping[nghe_chon]
+    
+    TN = st.number_input("Tổng thu nhập hàng tháng của bạn (Triệu đồng):", min_value=0.0, value=30.0, step=5.0)
+    SNPT = st.number_input("Số người bạn đang nuôi nấng/phụ thuộc trong gia đình (Người):", min_value=0, value=1, step=1)
+    PTMC = st.number_input("Số tiền bạn đang phải trả nợ hàng tháng cho các tổ chức tín dụng khác nếu có (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
+    
+    # ==============================================================================
+    # THAY ĐỔI: CIC CHO KHÁCH HÀNG TỰ ĐIỀN THÔNG TIN TRUNG THỰC
+    # ==============================================================================
+    st.markdown("**📌 Lịch sử vay mượn & Trả nợ cũ của bạn:**")
+    
+    tinh_trang_no = st.selectbox(
+        "Hiện tại, các khoản vay cũ của bạn (bao gồm cả thẻ tín dụng, mua trả góp) có bị trễ hạn không?",
+        [
+            "Tôi luôn trả nợ đúng hạn / Chưa từng vay mượn ai",
+            "Tôi đang có khoản nợ bị quá hạn dưới 90 ngày chưa kịp thanh toán",
+            "Tôi đang có nợ quá hạn quá lâu (trên 90 ngày) hoặc đang bị nợ xấu"
+        ]
     )
     
-    TN = st.number_input("Thu nhập hàng tháng (Triệu đồng/tháng):", min_value=0.0, value=30.0, step=5.0)
-    SNPT = st.number_input("Số người phụ thuộc (Người):", min_value=0, value=1, step=1)
-    PTMC = st.number_input("Gốc lãi khoản vay cũ phải trả hàng tháng (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
-    
-    # Quản lý rủi ro tín dụng qua hệ thống CIC
-    CIC = st.selectbox(
-        "Xếp hạng nhóm nợ (Hệ thống CIC):",
-        ["Nhóm 1 - Nợ đủ tiêu chuẩn", "Nhóm 2 - Nợ cần chú ý", "Nhóm 3 đến 5 - Nợ xấu"]
+    # Ánh xạ câu trả lời của khách hàng sang Nhóm nợ CIC kỹ thuật
+    if tinh_trang_no == "Tôi luôn trả nợ đúng hạn / Chưa từng vay mượn ai":
+        CIC = "Nhóm 1 - Nợ đủ tiêu chuẩn"
+    elif tinh_trang_no == "Tôi đang có khoản nợ bị quá hạn dưới 90 ngày chưa kịp thanh toán":
+        CIC = "Nhóm 2 - Nợ cần chú ý"
+    else:
+        CIC = "Nhóm 3 đến 5 - Nợ xấu"
+
+    so_lan_tra_cham = st.number_input(
+        "Trong vòng 1 năm qua, bạn đã từng đóng tiền trễ (dù chỉ trễ vài ngày) bao nhiêu lần?", 
+        min_value=0, value=0, step=1
     )
-    so_lan_tra_cham = st.number_input("Số lần trả chậm trong 12 tháng qua (Tờ khai CIC):", min_value=0, value=0, step=1)
     
-    # Logic ẩn/hiện: Lý do trả chậm chỉ xuất hiện khi có số lần trả chậm hoặc nhóm nợ xấu
+    # Khảo sát lý do chậm đóng tiền
     ly_do_tra_cham = "Không có trả chậm"
     if so_lan_tra_cham > 0 or CIC != "Nhóm 1 - Nợ đủ tiêu chuẩn":
         ly_do_tra_cham = st.selectbox(
-            "Lý do trả chậm chính (Đánh giá từ tờ trình/phỏng vấn):",
+            "Nguyên nhân chính dẫn đến việc bạn thanh toán trễ hạn là gì?",
             [
-                "Lý do khách quan (Quên ngày thanh toán / Đi công tác / Lỗi hệ thống ngân hàng)",
-                "Lý do kỹ thuật (Trễ lương từ công ty, dòng tiền về chậm 1-3 ngày)",
-                "Lý do chủ quan (Kinh doanh thua lỗ / Suy giảm thu nhập nghiêm trọng)",
-                "Lý do cố ý (Trốn tránh nghĩa vụ trả nợ / Phát sinh tranh chấp khoản vay cũ)"
+                "Do sơ xuất, quên ngày thanh toán hoặc do lỗi ứng dụng/lỗi ngân hàng",
+                "Do công ty chậm lương, hoặc đối tác thanh toán tiền chậm vài ngày",
+                "Do công việc/kinh doanh gặp khó khăn, nguồn thu nhập bị sụt giảm mạnh",
+                "Tôi không muốn trả khoản nợ đó hoặc đang có tranh chấp với bên cho vay"
             ]
         )
+        # Đồng bộ hóa lý do khách hàng chọn sang lý do kỹ thuật để chạy thuật toán chặn
+        ly_do_mapping = {
+            "Do sơ xuất, quên ngày thanh toán hoặc do lỗi ứng dụng/lỗi ngân hàng": "Lý do khách quan",
+            "Do công ty chậm lương, hoặc đối tác thanh toán tiền chậm vài ngày": "Lý do kỹ thuật",
+            "Do công việc/kinh doanh gặp khó khăn, nguồn thu nhập bị sụt giảm mạnh": "Lý do chủ quan",
+            "Tôi không muốn trả khoản nợ đó hoặc đang có tranh chấp với bên cho vay": "Lý do cố ý"
+        }
+        ly_do_chuyen_doi = ly_do_mapping[ly_do_tra_cham]
+    else:
+        ly_do_chuyen_doi = "Không có trả chậm"
 
 # ==============================================================================
 # PHẦN 2: TÍNH TOÁN DÒNG TIỀN DỰ KIẾN KỲ ĐẦU (REAL-TIME)
@@ -94,7 +136,7 @@ with col2:
 TG_Thang = TGV * 12
 if TG_Thang > 0:
     Goc_Hang_Thang = STV / TG_Thang
-    if hinh_thuc_tra == "Gốc đều, lãi giảm dần (Kỳ đầu cao nhất)":
+    if "Kỳ đầu cao nhất" in hinh_thuc_tra:
         Lai_Thang_Dau = STV * (LSV / 12)
         PTMM = Goc_Hang_Thang + Lai_Thang_Dau
     else:  # Phương pháp tính đều hàng tháng (Annuity)
@@ -108,14 +150,14 @@ else:
     Goc_Hang_Thang = 0.0
     Lai_Thang_Dau = 0.0
 
-st.info(f"💡 **Khoản trả hàng tháng dự kiến (Kỳ đầu tiên/Ước tính):** `{PTMM:.2f}` Triệu đồng/tháng (Trong đó Gốc: {Goc_Hang_Thang:.2f} tr, Lãi: {PTMM - Goc_Hang_Thang:.2f} tr)")
+st.info(f"💡 **Ước tính số tiền bạn cần trả hằng tháng (Kỳ đầu tiên):** `{PTMM:.2f}` Triệu đồng/tháng (Tiền Gốc cố định: {Goc_Hang_Thang:.2f} tr, Tiền Lãi tháng đầu: {PTMM - Goc_Hang_Thang:.2f} tr)")
 
 st.markdown("---")
 
 # ==============================================================================
 # PHẦN 3: LOGIC THẨM ĐỊNH VÀ PHÊ DUYỆT TỰ ĐỘNG KHI BẤM NÚT
 # ==============================================================================
-if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
+if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
     try:
         # Tổng nghĩa vụ tài chính phải trả hàng tháng
         Tong_No_Phai_Tra = PTMM + PTMC
@@ -126,104 +168,90 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
         tong_chi_phi_sinh_hoat = CPSH_BAN_THAN + (SNPT * CPSH_PHU_THUOC)
         thu_nhap_rong = TN - tong_chi_phi_sinh_hoat
         
-        # Cách tính toán chỉ số theo chuẩn tài chính quốc tế
         DTI = Tong_No_Phai_Tra / TN if TN > 0 else 1.0
-        LTV = STV / GTTSDB if GTTSDB > 0 else 1.0
+        LTV = STV / GTTSDB if GTTSDB > 0 else 0.0
         Tich_Luy_Con_Lai = thu_nhap_rong - PTMM
 
         # Giao diện Tabs phân tách thông tin chuyên nghiệp
-        tab1, tab2, tab3 = st.tabs(["📈 Kết quả phân tích chỉ số", "📋 Hồ sơ & Nghĩa vụ dòng tiền", "⚠️ Khuyến nghị rủi ro"])
+        tab1, tab2, tab3 = st.tabs(["📈 Đánh giá khả năng vay", "📋 Chi tiết dòng tiền của bạn", "💡 Khuyên dùng từ ngân hàng"])
         
         with tab1:
-            st.write("### Các chỉ số tài chính cốt lõi:")
+            st.write("### Các chỉ số an toàn tài chính cá nhân của bạn:")
             m1, m2, m3 = st.columns(3)
-            m1.metric(label="Chỉ số DTI (Tổng nợ / Thu nhập)", value=f"{DTI * 100:.2f}%", delta="≤ 70% Tiêu chuẩn")
-            m2.metric(label="Chỉ số LTV (Khoản vay / TSĐB)", value=f"{LTV * 100:.2f}%", delta="≤ 70% Tiêu chuẩn")
-            m3.metric(label="Tuổi khách hàng", value=f"{STKH} tuổi", delta="18 - 70 tuổi")
+            m1.metric(label="Tỷ lệ nợ trên thu nhập (DTI)", value=f"{DTI * 100:.2f}%", delta="Mục tiêu: ≤ 70%")
+            if "Không cần tài sản" in loai_vay:
+                m2.metric(label="Tỷ lệ khoản vay trên Tài sản (LTV)", value="Không áp dụng", delta="Vay tín chấp")
+            else:
+                m2.metric(label="Tỷ lệ khoản vay trên Tài sản (LTV)", value=f"{LTV * 100:.2f}%", delta="Mục tiêu: ≤ 70%")
+            m3.metric(label="Số tuổi của bạn", value=f"{STKH} tuổi", delta="Quy định: 18 - 70 tuổi")
             
             st.markdown("---")
-            st.write("### 🏁 KẾT LUẬN THẨM ĐỊNH TỰ ĐỘNG:")
+            st.write("### 🏁 KẾT QUẢ ĐÁNH GIÁ TỰ ĐỘNG:")
             
             # --- KHỐI LOGIC CHẶN CỨNG (POLICY RULES) ---
             rejection_reasons = []
             
-            # Kiểm tra luật rủi ro CIC và Lý do trả chậm
+            # Kiểm tra luật rủi ro CIC dựa trên thông tin tự điền
             if CIC == "Nhóm 3 đến 5 - Nợ xấu":
-                rejection_reasons.append("Khách hàng có lịch sử nợ xấu nghiêm trọng (Nhóm 3-5) trên hệ thống CIC.")
+                rejection_reasons.append("Bạn hiện đang có khoản nợ bị quá hạn quá lâu (trên 90 ngày). Ngân hàng không thể cấp thêm khoản vay mới khi nợ cũ chưa giải quyết.")
             
             if CIC == "Nhóm 2 - Nợ cần chú ý":
-                if "Lý do chủ quan" in ly_do_tra_cham or "Lý do cố ý" in ly_do_tra_cham:
-                    rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 do yếu tố rủi ro cao từ phía chủ quan: {ly_do_tra_cham}")
+                if "Lý do chủ quan" in ly_do_chuyen_doi or "Lý do cố ý" in ly_do_chuyen_doi:
+                    rejection_reasons.append("Lịch sử trễ hạn cũ xuất phát từ việc kinh doanh thua lỗ hoặc tranh chấp, tiềm ẩn rủi ro cao cho khoản vay mới.")
                 elif so_lan_tra_cham > 3:
-                    rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 và tần suất trễ hạn quá nhiều ({so_lan_tra_cham} lần).")
+                    rejection_reasons.append(f"Tần suất bạn nộp trễ hạn trong năm qua quá nhiều ({so_lan_tra_cham} lần), cho thấy thói quen tài chính chưa tốt.")
             
-            if "Lý do cố ý" in ly_do_tra_cham:
-                rejection_reasons.append("Hệ thống phát hiện dấu hiệu cố ý chây ỳ hoặc tranh chấp nghĩa vụ trả nợ cũ.")
+            if "Lý do cố ý" in ly_do_chuyen_doi:
+                rejection_reasons.append("Hệ thống từ chối do bạn ghi nhận có tranh chấp cố ý không thanh toán nợ cũ.")
             
             if CIC == "Nhóm 1 - Nợ đủ tiêu chuẩn" and so_lan_tra_cham > 5:
-                rejection_reasons.append(f"Tần suất trả chậm quá dày ({so_lan_tra_cham} lần) cảnh báo rủi ro quản lý dòng tiền của khách hàng.")
+                rejection_reasons.append(f"Mặc dù bạn đã đóng đủ nợ cũ, nhưng việc nộp trễ quá nhiều lần ({so_lan_tra_cham} lần) khiến hệ thống đánh giá thấp mức độ uy tín.")
 
             # Kiểm tra luật rủi ro tài chính
             if DTI > 0.70:
-                rejection_reasons.append(f"Chỉ số DTI ({DTI * 100:.2f}%) vượt ngưỡng an toàn cho phép là 70%.")
-            if loai_vay != "Vay tiêu dùng tín chấp" and LTV > 0.70:
-                rejection_reasons.append(f"Chỉ số LTV ({LTV * 100:.2f}%) vượt quá quy định 70% đối với khoản vay thế chấp.")
-            if loai_vay == "Vay tiêu dùng tín chấp" and STV > 500:
-                rejection_reasons.append("Hạn mức khoản vay tín chấp cá nhân vượt quá quy định tối đa (500 triệu đồng).")
+                rejection_reasons.append(f"Tổng số tiền trả nợ mỗi tháng (cũ + mới) chiếm đến {DTI * 100:.2f}% thu nhập của bạn. Áp lực trả nợ quá lớn, vượt ngưỡng an toàn (70%).")
+            if "Không cần tài sản" not in loai_vay and LTV > 0.70:
+                rejection_reasons.append(f"Giá trị tài sản bạn thế chấp không đủ bảo đảm cho số tiền muốn vay (Số tiền vay vượt quá 70% giá trị tài sản).")
+            if "Không cần tài sản" in loai_vay and STV > 500:
+                rejection_reasons.append("Hạn mức tối đa cho gói vay tín chấp (không tài sản đảm bảo) của khách hàng cá nhân là 500 triệu đồng.")
             if STKH < 18 or STKH > 70:
-                rejection_reasons.append(f"Độ tuổi hiện tại của khách hàng ({STKH} tuổi) nằm ngoài phạm vi cấp tín dụng (18 - 70 tuổi).")
+                rejection_reasons.append(f"Độ tuổi của bạn ({STKH} tuổi) nằm ngoài khung tuổi quy định hỗ trợ vay vốn (18 đến 70 tuổi).")
             if Tich_Luy_Con_Lai < 0:
-                rejection_reasons.append("Thu nhập thặng dư còn lại bị âm. Khách hàng không đủ tiền duy trì cuộc sống sau khi trả nợ.")
-            if nghe_nghiep == "Lao động tự do / Tạm thời" and loai_vay == "Vay tiêu dùng tín chấp":
-                rejection_reasons.append("Nguồn thu nhập không ổn định/không có chứng từ hợp pháp, không đủ điều kiện cấp tín chấp.")
+                rejection_reasons.append("Sau khi trừ tiền trả nợ mới và chi phí sinh hoạt tối thiểu của gia đình, thu nhập còn lại của bạn bị âm. Bạn sẽ không đủ tiền chi tiêu.")
+            if "Lao động tự do" in nghe_nghiep and "Không cần tài sản" in loai_vay:
+                rejection_reasons.append("Hình thức vay tín chấp yêu cầu bắt buộc khách hàng phải có nguồn thu nhập ổn định từ lương có hợp đồng rõ ràng.")
 
-            # Đưa ra thông báo cuối cùng
+            # Đưa ra thông báo cuối cùng cho Khách hàng
             if len(rejection_reasons) == 0:
-                st.success("🎉 **CHẤP THUẬN CHO VAY (APPROVED)**")
+                st.success("🎉 **CHÚC MỪNG! HỒ SƠ ĐỦ ĐIỀU KIỆN SƠ TUYỂN (APPROVED)**")
                 st.balloons()
-                st.write("Hồ sơ hoàn hảo, đáp ứng tốt các quy định về uy tín, năng lực tài chính và phương án sử dụng vốn.")
+                st.write("Hồ sơ của bạn đạt các tiêu chí an toàn cơ bản của ngân hàng. Chuyên viên tín dụng sẽ liên hệ với bạn trong vòng 15 phút để hướng dẫn nhận tiền.")
             else:
-                st.error("🚨 **TỪ CHỐI CHO VAY (REJECTED)**")
-                st.markdown("**Các lý do không đạt chi tiết từ hệ thống:**")
+                st.error("🚨 **RẤT TIẾC, HỒ SƠ CHƯA ĐỦ ĐIỀU KIỆN (REJECTED)**")
+                st.markdown("**Các lý do khiến hồ sơ chưa đạt:**")
                 for reason in rejection_reasons:
                     st.write(f"- {reason}")
                     
         with tab2:
-            st.write("### Tóm tắt thông tin hồ sơ thẩm định:")
-            c_info1, c_info2 = st.columns(2)
-            with c_info1:
-                st.write(f"- **Loại sản phẩm tín dụng:** {loai_vay}")
-                st.write(f"- **Mục đích giải ngân:** {muc_dich}")
-                st.write(f"- **Phương thức hoàn trả:** {hinh_thuc_tra}")
-                st.write(f"- **Cơ cấu nguồn thu:** Chính: `{nguon_chinh}` | Dự phòng: `{nguon_phu}`")
-            with c_info2:
-                st.write(f"- **Tình trạng hôn nhân:** {hon_nhan}")
-                st.write(f"- **Nhóm nghề nghiệp:** {nghe_nghiep}")
-                st.write(f"- **Lịch sử tín dụng:** {CIC} (Tần suất trả chậm: {so_lan_tra_cham} lần)")
-                st.write(f"- **Nguyên nhân chậm trả:** {ly_do_tra_cham}")
-
-            st.markdown("---")
-            st.write("### Phân tích dòng tiền hàng tháng:")
-            st.write(f"- 💵 **Khoản phải trả hàng tháng cho khoản vay mới:** `{PTMM:.2f}` Triệu đồng/tháng")
-            st.write(f"- 💳 **Nghĩa vụ trả nợ các khoản vay cũ (nếu có):** `{PTMC:.2f}` Triệu đồng/tháng")
-            st.write(f"- 💸 **Ước tính tổng chi phí sinh hoạt gia đình:** `{tong_chi_phi_sinh_hoat:.2f}` Triệu đồng/tháng")
-            st.write(f"- 📈 **Thu nhập thặng dư còn lại để tích lũy:** `{Tich_Luy_Con_Lai:.2f}` Triệu đồng/tháng")
+            st.write("### Bản tóm tắt dòng tiền hàng tháng của bạn:")
+            st.write(f"- 💵 **Tiền trả định kỳ cho khoản vay mới này:** `{PTMM:.2f}` Triệu đồng/tháng")
+            st.write(f"- 💳 **Tiền trả cho các khoản nợ cũ khác (nếu có):** `{PTMC:.2f}` Triệu đồng/tháng")
+            st.write(f"- 💸 **Ước tính chi phí ăn ở, sinh hoạt tối thiểu của gia đình bạn:** `{tong_chi_phi_sinh_hoat:.2f}` Triệu đồng/tháng")
+            st.write(f"- 📈 **Số tiền thặng dư bạn còn lại để tích lũy/dự phòng:** `{Tich_Luy_Con_Lai:.2f}` Triệu đồng/tháng")
 
         with tab3:
-            st.write("### Đánh giá định tính & Biện pháp giảm thiểu rủi ro:")
+            st.write("### Lời khuyên tài chính dành cho bạn:")
             
-            if "Lý do khách quan" in ly_do_tra_cham and CIC == "Nhóm 2 - Nợ cần chú ý":
-                st.warning("⚠️ **Gợi ý Thẩm định viên:** Khách hàng nợ Nhóm 2 nhưng do nguyên nhân quên/lỗi hệ thống. Có thể đề xuất phê duyệt ngoại lệ (Vượt thẩm quyền cấp Đơn vị) nếu bổ sung chứng từ chứng minh thanh toán ngay lập tức.")
-            if "Lý do kỹ thuật" in ly_do_tra_cham:
-                st.info("ℹ️ **Cơ cấu dòng tiền:** Khách hàng chậm do lệch kỳ lương. Khuyến nghị thiết lập Ngày trả nợ định kỳ dịch sang sau ngày nhận lương 2-3 ngày.")
+            if DTI > 0.50 and DTI <= 0.70:
+                st.warning("⚠️ Khoản nợ này đang chiếm hơn một nửa thu nhập của bạn. Bạn nên cân nhắc kéo dài thời gian vay (tăng số năm trả góp) để giảm bớt tiền phải đóng mỗi tháng.")
+            if "Lý do khách quan" in ly_do_chuyen_doi:
+                st.info("ℹ️ Nếu bạn từng trễ hạn chỉ vì 'quên ngày', sau khi được giải ngân khoản vay này, hãy bật tính năng 'Trích nợ tự động' trên app ngân hàng để tránh bị phạt oan nhé.")
+            if "Lý do kỹ thuật" in ly_do_chuyen_doi:
+                st.info("ℹ️ Nếu ngày nhận lương lệch với ngày trả nợ ngân hàng, bạn có quyền yêu cầu chuyên viên đổi ngày đóng tiền sang ngày 5 hoặc ngày 10 hàng tháng để an tâm hơn.")
             if hon_nhan == "Đã kết hôn" and nguon_phu == "Không có":
-                st.warning("⚠️ Khách hàng đã lập gia đình nhưng chưa đưa thông tin Vợ/Chồng vào làm Người đồng vay nhằm tăng độ bao phủ nguồn thu.")
-            if nghe_nghiep == "Kinh doanh tự do / Chủ doanh nghiệp":
-                st.info("ℹ️ **Yêu cầu kiểm tra thực địa:** Cần thẩm định thực tế cơ sở kinh doanh, kiểm tra sổ sách/nhật ký bán hàng để xác thực thu nhập.")
-            if len(rejection_reasons) == 0 and so_lan_tra_cham > 0:
-                st.warning(f"⚠️ Khách hàng từng có lịch sử chậm trả nhẹ ({so_lan_tra_cham} lần). Khuyến nghị bắt buộc cài đặt dịch vụ trích nợ tự động (Auto-debit) tài khoản lương khi giải ngân.")
+                st.warning("⚠️ Nếu số tiền vay lớn, bạn nên làm hồ sơ 'Đồng vay' cùng Vợ/Chồng của mình. Việc này giúp cộng gộp thu nhập của cả hai và giúp hồ sơ dễ duyệt hơn rất nhiều.")
             if len(rejection_reasons) == 0 and so_lan_tra_cham == 0:
-                st.write("✅ Hồ sơ sạch, lịch sử uy tín tín dụng tốt. Không ghi nhận cảnh báo định tính.")
+                st.write("✅ Bạn có lịch sử tài chính tuyệt vời! Hãy tiếp tục duy trì thói quen chi tiêu và thanh toán đúng hạn này.")
                                 
     except ZeroDivisionError:
-        st.error("❌ Hệ thống không thể tính toán do có trường dữ liệu bằng 0 hoặc chưa hợp lệ. Vui lòng kiểm tra lại Giá trị tài sản đảm bảo hoặc Thời gian vay.")
+        st.error("❌ Có lỗi xảy ra trong quá trình tính toán. Vui lòng kiểm tra lại số liệu đã nhập.")
