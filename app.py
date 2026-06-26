@@ -13,8 +13,6 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("📋 1. Thông tin khoản vay đề xuất")
-    
-    # Bổ sung loại, mục đích, hình thức và nguồn trả nợ
     loai_vay = st.selectbox("Loại khoản vay:", ["Vay tiêu dùng tín chấp", "Vay mua Ô tô (Thế chấp)", "Vay mua Bất động sản (Thế chấp)", "Vay sản xuất kinh doanh"])
     muc_dich = st.text_input("Mục đích vay cụ thể:", value="Mua nhà chung cư / Tiêu dùng gia đình")
     
@@ -29,7 +27,6 @@ with col1:
 
 with col2:
     st.subheader("👤 2. Thông tin khách hàng & Uy tín (CIC)")
-    
     STKH = st.number_input("Số tuổi của khách hàng (Tuổi):", min_value=0, max_value=120, value=30, step=1)
     hon_nhan = st.selectbox("Tình trạng hôn nhân:", ["Độc thân", "Đã kết hôn", "Ly hôn/Khác"])
     nghe_nghiep = st.selectbox("Nghề nghiệp/Lĩnh vực làm việc:", ["Nhân viên văn phòng (HĐLĐ vô thời hạn)", "Kinh doanh tự do / Chủ doanh nghiệp", "Công chức / Viên chức nhà nước", "Lao động tự do / Tạm thời"])
@@ -38,15 +35,27 @@ with col2:
     SNPT = st.number_input("Số người phụ thuộc (Người):", min_value=0, value=1, step=1)
     PTMC = st.number_input("Gốc lãi khoản vay cũ phải trả hàng tháng (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
     
-    # Bổ sung CIC chi tiết: Nhóm nợ và Số lần trả chậm
+    # --- CẤU PHẦN CIC CẢI TIẾN ---
     CIC = st.selectbox(
         "Xếp hạng nhóm nợ (Hệ thống CIC):",
         ["Nhóm 1 - Nợ đủ tiêu chuẩn", "Nhóm 2 - Nợ cần chú ý", "Nhóm 3 đến 5 - Nợ xấu"]
     )
     so_lan_tra_cham = st.number_input("Số lần trả chậm trong 12 tháng qua (Tờ khai CIC):", min_value=0, value=0, step=1)
+    
+    # Hiển thị lý do trả chậm nếu số lần trả chậm > 0 hoặc thuộc Nhóm 2, Nhóm 3-5
+    ly_do_tra_cham = "Không có trả chậm"
+    if so_lan_tra_cham > 0 or CIC != "Nhóm 1 - Nợ đủ tiêu chuẩn":
+        ly_do_tra_cham = st.selectbox(
+            "Lý do trả chậm chính (Đánh giá từ tờ trình/phỏng vấn):",
+            [
+                "Lý do khách quan (Quên ngày thanh toán / Đi công tác / Lỗi hệ thống ngân hàng)",
+                "Lý do kỹ thuật (Trễ lương từ công ty, dòng tiền về chậm 1-3 ngày)",
+                "Lý do chủ quan (Kinh doanh thua lỗ / Suy giảm thu nhập nghiêm trọng)",
+                "Lý do cố ý (Trốn tránh nghĩa vụ trả nợ / Phát sinh tranh chấp khoản vay cũ)"
+            ]
+        )
 
 # --- PHẦN 2: TÍNH TOÁN DỰ KIẾN KHOẢN TRẢ HÀNG THÁNG ---
-# Tính toán động ngay khi người dùng thay đổi dữ liệu để hiển thị số tiền trả dự kiến
 TG_Thang = TGV * 12
 if TG_Thang > 0:
     Goc_Hang_Thang = STV / TG_Thang
@@ -98,15 +107,26 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
             st.markdown("---")
             st.write("### 🏁 KẾT LUẬN THẨM ĐỊNH TỰ ĐỘNG:")
             
-            # Thiết lập quy tắc chấm điểm (Hard-rules)
+            # Thiết lập quy tắc chặn cứng (Hard-rules) có bổ sung lý do CIC
             rejection_reasons = []
             
+            # 1. Khối logic CIC & Lý do trả chậm
             if CIC == "Nhóm 3 đến 5 - Nợ xấu":
                 rejection_reasons.append("Khách hàng có nợ xấu lịch sử (Nhóm 3-5) trên hệ thống CIC.")
-            if CIC == "Nhóm 2 - Nợ cần chú ý" and so_lan_tra_cham > 2:
-                rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 và có số lần trả chậm quá cao ({so_lan_tra_cham} lần).")
-            if so_lan_tra_cham > 5:
-                rejection_reasons.append(f"Tần suất trả chậm nghiêm trọng ({so_lan_tra_cham} lần trong năm qua) mặc dù đang ở Nhóm 1.")
+            
+            if CIC == "Nhóm 2 - Nợ cần chú ý":
+                if "Lý do chủ quan" in ly_do_tra_cham or "Lý do cố ý" in ly_do_tra_cham:
+                    rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 do yếu tố chủ quan rủi ro cao: {ly_do_tra_cham}")
+                elif so_lan_tra_cham > 3:
+                    rejection_reasons.append(f"Khách hàng thuộc Nhóm 2 và tần suất trả chậm quá dày ({so_lan_tra_cham} lần).")
+            
+            if "Lý do cố ý" in ly_do_tra_cham:
+                rejection_reasons.append("Hệ thống từ chối do phát hiện lịch sử khách hàng cố ý trốn tránh nghĩa vụ nợ hoặc đang tranh chấp.")
+            
+            if CIC == "Nhóm 1 - Nợ đủ tiêu chuẩn" and so_lan_tra_cham > 5:
+                rejection_reasons.append(f"Tần suất trả chậm nghiêm trọng ({so_lan_tra_cham} lần) mặc dù đang giữ Nhóm 1.")
+
+            # 2. Các logic tài chính khác
             if DTI > 0.70:
                 rejection_reasons.append(f"Chỉ số DTI ({DTI * 100:.2f}%) vượt ngưỡng an toàn 70%.")
             if loai_vay != "Vay tiêu dùng tín chấp" and LTV > 0.70:
@@ -118,8 +138,9 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
             if Tich_Luy_Con_Lai < 0:
                 rejection_reasons.append("Thu nhập thặng dư tích lũy bị âm sau khi trừ toàn bộ chi phí và nợ phải trả.")
             if nghe_nghiep == "Lao động tự do / Tạm thời" and loai_vay == "Vay tiêu dùng tín chấp":
-                rejection_reasons.append("Nghề nghiệp rủi ro cao, không có nguồn thu nhập ổn định chứng minh cho khoản vay tín chấp.")
+                rejection_reasons.append("Nghề nghiệp rủi ro cao, không có nguồn thu nhập ổn định để phê duyệt tín chấp.")
 
+            # Trả kết quả phê duyệt
             if len(rejection_reasons) == 0:
                 st.success("🎉 **CHẤP THUẬN CHO VAY (APPROVED)**")
                 st.balloons()
@@ -140,7 +161,8 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
             with c_info2:
                 st.write(f"- **Tình trạng hôn nhân:** {hon_nhan}")
                 st.write(f"- **Nhóm nghề nghiệp:** {nghe_nghiep}")
-                st.write(f"- **Lịch sử trả chậm:** {so_lan_tra_cham} lần")
+                st.write(f"- **Lịch sử tín dụng:** {CIC} (Trả chậm {so_lan_tra_cham} lần)")
+                st.write(f"- **Nguyên nhân ghi nhận:** {ly_do_tra_cham}")
 
             st.markdown("---")
             st.write("### Chi tiết dòng tiền hàng tháng:")
@@ -150,15 +172,20 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
             st.write(f"- 📈 **Thu nhập thặng dư còn lại để tích lũy:** `{Tich_Luy_Con_Lai:.2f}` Triệu đồng/tháng")
 
         with tab3:
-            st.write("### Đánh giá định tính từ hệ thống rủi ro:")
+            st.write("### Đánh giá định tính & Giảm thiểu rủi ro:")
+            
+            # Cảnh báo dựa trên lý do trả chậm
+            if "Lý do khách quan" in ly_do_tra_cham and CIC == "Nhóm 2 - Nợ cần chú ý":
+                st.warning("⚠️ **Lưu ý Thẩm định viên:** Khách hàng nợ Nhóm 2 nhưng do quên hoặc lỗi hệ thống. Có thể xem xét phê duyệt ngoại lệ (Vượt thẩm quyền cấp Đơn vị) nếu bổ sung được sao kê chứng minh thanh toán bù ngay sau đó.")
+            if "Lý do kỹ thuật" in ly_do_tra_cham:
+                st.info("ℹ️ Khách hàng chậm do chu kỳ lương công ty lệch ngày trả nợ ngân hàng. Khuyến nghị cơ cấu lại Ngày cấp tín dụng/Ngày trả nợ sang ngày 10 hàng tháng để khớp dòng tiền.")
+            
             if hon_nhan == "Đã kết hôn" and nguon_phu == "Không có":
-                st.warning("⚠️ Khách hàng đã kết hôn nhưng chưa đưa thu nhập của Vợ/Chồng vào nguồn thu bổ sung để tăng tỷ lệ an toàn.")
+                st.warning("⚠️ Khách hàng đã kết hôn nhưng chưa đưa thu nhập của Vợ/Chồng vào nguồn thu bổ sung để giảm tỷ lệ DTI.")
             if nghe_nghiep == "Kinh doanh tự do / Chủ doanh nghiệp":
                 st.info("ℹ️ Cần thẩm định thực tế cơ sở kinh doanh để xác minh tính xác thực của dòng tiền thu nhập.")
-            if so_lan_tra_cham > 0 and so_lan_tra_cham <= 2:
-                st.warning(f"⚠️ Khách hàng có {so_lan_tra_cham} lần trả chậm nhẹ. Cần theo dõi sát tiến độ thanh toán nếu duyệt vay.")
-            if len(rejection_reasons) == 0:
-                st.write("✅ Hồ sơ sạch, không ghi nhận cảnh báo định tính đặc biệt.")
+            if len(rejection_reasons) == 0 and so_lan_tra_cham > 0:
+                st.warning(f"⚠️ Khách hàng có lịch sử trả chậm nhẹ ({so_lan_tra_cham} lần). Hệ thống phê duyệt nhưng khuyến nghị cài đặt trích nợ tự động (Auto-debit).")
                                 
     except ZeroDivisionError:
         st.error("❌ Hệ thống không thể tính toán do có trường dữ liệu bằng 0 hoặc chưa hợp lệ.")
