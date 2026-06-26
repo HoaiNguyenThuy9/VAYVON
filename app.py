@@ -12,7 +12,7 @@ URL_LOGO = "hình bìa app.jpg"
 st.sidebar.image(URL_LOGO, use_container_width=True)
 st.sidebar.markdown("---")
 st.sidebar.write("### 🏢 Hệ thống trực tuyến")
-st.sidebar.info("Cổng Đăng Ký Khoản Vay Tự Động\n\nKhách hàng: THUY HOAI")
+st.sidebar.info("Cổng Đăng Ký Khoản Vay Tự Động\n\n NHÓM 6")
 st.sidebar.markdown("---")
 st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký vay trực tuyến của Khách hàng.")
 
