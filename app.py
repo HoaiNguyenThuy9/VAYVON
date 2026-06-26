@@ -10,7 +10,7 @@ st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - THUY HOAI", layout="wid
 URL_LOGO = "https://www.streamlit.io/images/brand/streamlit-logo-secondary-colormark-darktext.png" 
 
 # Cách 2: Nếu bạn có file ảnh trong máy, hãy để file ảnh cùng thư mục với file app.py và dùng:
-# URL_LOGO = "hình bìa app.jpg" # Giải nén hoặc bỏ dấu thăng (#) nếu dùng ảnh trong máy
+# URL_LOGO = "logo_bdu.png" # Giải nén hoặc bỏ dấu thăng (#) nếu dùng ảnh trong máy
 
 # Hiển thị logo ở góc trên cùng của thanh SideBar (Thanh bên trái)
 st.sidebar.image(URL_LOGO, use_container_width=True)
@@ -20,7 +20,7 @@ st.sidebar.info("Phòng Tín Dụng Khách Hàng Cá Nhân\n\nThực hiện bở
 
 # Hoặc nếu muốn hiển thị logo ngay trên đầu tiêu đề chính, bạn bỏ dấu thăng (#) ở dòng dưới:
 # st.image(URL_LOGO, width=200)
- ===============================================================================
+# ==============================================================================
 
 st.title("🏦 APP THẨM ĐỊNH CHO VAY ONLINE KHCN - THUY HOAI - ĐỀ TÀI 6")
 st.write("Hệ thống tự động thẩm định, phân tích rủi ro và phê duyệt tín dụng Khách hàng cá nhân.")
@@ -187,6 +187,3 @@ if st.button("📊 Kiểm tra kết quả thẩm định", type="primary"):
                 st.info("ℹ️ Cần thẩm định thực tế cơ sở kinh doanh để xác minh tính xác thực của dòng tiền thu nhập.")
             if len(rejection_reasons) == 0 and so_lan_tra_cham > 0:
                 st.warning(f"⚠️ Khách hàng có lịch sử trả chậm nhẹ ({so_lan_tra_cham} lần). Khuyến nghị cài đặt trích nợ tự động (Auto-debit).")
-                                
-    except ZeroDivisionError:
-        st.error("❌ Hệ thống không thể tính toán do có trường dữ liệu bằng 0 hoặc chưa hợp lệ.")
