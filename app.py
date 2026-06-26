@@ -10,7 +10,7 @@ st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - THUY HOAI", layout="wid
 URL_LOGO = "https://www.streamlit.io/images/brand/streamlit-logo-secondary-colormark-darktext.png" 
 
 # Cách 2: Nếu bạn có file ảnh trong máy, hãy để file ảnh cùng thư mục với file app.py và dùng:
-# URL_LOGO = "logo_bdu.png" # Giải nén hoặc bỏ dấu thăng (#) nếu dùng ảnh trong máy
+# URL_LOGO = "hình bìa app.jpg" # Giải nén hoặc bỏ dấu thăng (#) nếu dùng ảnh trong máy
 
 # Hiển thị logo ở góc trên cùng của thanh SideBar (Thanh bên trái)
 st.sidebar.image(URL_LOGO, use_container_width=True)
