@@ -5,11 +5,69 @@ import streamlit as st
 # ==============================================================================
 st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - THUY HOAI", layout="wide")
 
-# Đường link Logo (Có thể thay thế bằng link logo Trường hoặc Ngân hàng của bạn)
+# Thiết kế giao diện hiện đại bằng CSS Custom
+st.markdown("""
+    <style>
+    /* 1. Thiết lập hình nền nhẹ nhàng cho toàn bộ ứng dụng */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+    
+    /* 2. Tạo hiệu ứng Card hiện đại cho các phân đoạn */
+    .custom-card {
+        background-color: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        border: 1px solid #e1e8ed;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .custom-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* 3. Tùy chỉnh các thanh tiêu đề phân đoạn */
+    .section-title {
+        color: #1e3a8a;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        border-left: 5px solid #3b82f6;
+        padding-left: 10px;
+    }
+    
+    /* 4. Định dạng nút bấm chính (Gửi hồ sơ) */
+    div.stButton > button:first-child {
+        background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        width: 100%;
+        transition: all 0.3s;
+    }
+    div.stButton > button:first-child:hover {
+        background: linear-gradient(90deg, #172554 0%, #1d4ed8 100%);
+        box-shadow: 0 6px 15px rgba(29, 78, 216, 0.4);
+        border: none;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Đường link Logo
 URL_LOGO = "tài chính.png" 
 
 # Hiển thị Logo và thông tin tại thanh Sidebar bên trái
-st.sidebar.image(URL_LOGO, use_container_width=True)
+try:
+    st.sidebar.image(URL_LOGO, use_container_width=True)
+except:
+    st.sidebar.warning("⚠️ Không tìm thấy file tài chính.png. Vui lòng kiểm tra lại đường dẫn.")
+    
 st.sidebar.markdown("---")
 st.sidebar.write("### 🏢 Hệ thống trực tuyến")
 st.sidebar.info("Cổng Đăng Ký Khoản Vay Tự Động\n\n NHÓM 6")
@@ -19,33 +77,38 @@ st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký
 # ==============================================================================
 # TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG
 # ==============================================================================
-st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
-st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
-
-st.markdown("---")
+st.markdown("""
+    <div style="text-align: center; margin-bottom: 25px;">
+        <h1 style="color: #1e3a8a; font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;">🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN</h1>
+        <p style="color: #4b5563; font-size: 1.05rem;">Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.</p>
+    </div>
+""", unsafe_allow_html=True)
 
 # ==============================================================================
-# PHẦN 1: THÔNG TIN ĐỊNH DANH KHÁCH HÀNG (HỌ TÊN, CCCD, ĐỊA CHỈ)
+# PHẦN 1: THÔNG TIN ĐỊNH DANH KHÁCH HÀNG (Bọc trong container + CSS Card)
 # ==============================================================================
-st.subheader("🪪 1. Thông tin định danh cá nhân")
+st.markdown('<div class="custom-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">🪪 1. Thông tin định danh cá nhân</div>', unsafe_allow_html=True)
+
 col_id1, col_id2, col_id3 = st.columns([1.5, 1.5, 2])
-
 with col_id1:
     ho_ten = st.text_input("Họ và chữ lót, Tên của bạn:", value="Nguyễn Văn A")
 with col_id2:
     cccd = st.text_input("Số Căn cước công dân (CCCD - 12 số):", value="012345678901")
 with col_id3:
-    dia_chi = st.text_input("Địa chỉ cư trú hiện tại (Số nhà, Đường, Phường/Xã, Quận/Huyện, Tỉnh/TP):", value="123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh")
+    dia_chi = st.text_input("Địa chỉ cư trú hiện tại (Số nhà, Đường...):", value="123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh")
 
-st.markdown("---")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# PHẦN 2: GIAO DIỆN NHẬP LIỆU TÀI CHÍNH & KHOẢN VAY (CHIA THÀNH 2 CỘT)
+# PHẦN 2 & 3: NHU CẦU VÀ TÀI CHÍNH (Chia 2 cột song song, mỗi cột là 1 Card)
 # ==============================================================================
-col1, col2 = st.columns(2)
+col_main1, col_main2 = st.columns(2)
 
-with col1:
-    st.subheader("📋 2. Nhu cầu vay vốn của bạn")
+with col_main1:
+    st.markdown('<div class="custom-card" style="height: 100%;">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📋 2. Nhu cầu vay vốn của bạn</div>', unsafe_allow_html=True)
+    
     loai_vay = st.selectbox(
         "Bạn muốn vay theo hình thức nào?", 
         ["Vay tiêu dùng tín chấp (Không cần tài sản)", "Vay mua Ô tô (Thế chấp bằng xe)", "Vay mua Bất động sản (Thế chấp bằng đất/nhà)", "Vay sản xuất kinh doanh"]
@@ -56,7 +119,6 @@ with col1:
     TGV = st.number_input("Thời gian bạn muốn trả góp (Số năm):", min_value=0.5, value=5.0, step=0.5)
     LSV = st.number_input("Lãi suất ước tính (%/năm):", min_value=0.0, max_value=50.0, value=10.0, step=0.5) / 100
     
-    # Ẩn/hiện ô nhập tài sản đảm bảo tùy thuộc vào loại hình vay
     if "Không cần tài sản" in loai_vay:
         GTTSDB = 0.0
         st.caption("ℹ️ Bạn đang chọn vay tín chấp, không cần kê khai giá trị tài sản đảm bảo.")
@@ -75,9 +137,12 @@ with col1:
         "Bạn có nguồn thu nhập dự phòng nào khác không?", 
         ["Không có", "Thu nhập bổ sung từ Vợ/Chồng", "Tiền gửi tiết kiệm / Tài sản tích lũy khác"]
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-with col2:
-    st.subheader("👤 3. Thông tin tài chính & Lịch sử tín dụng")
+with col_main2:
+    st.markdown('<div class="custom-card" style="height: 100%;">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">👤 3. Thông tin tài chính & Lịch sử tín dụng</div>', unsafe_allow_html=True)
+    
     STKH = st.number_input("Số tuổi hiện tại của bạn (Tuổi):", min_value=0, max_value=120, value=30, step=1)
     hon_nhan = st.selectbox("Tình trạng hôn nhân hiện tại:", ["Độc thân", "Đã kết hôn", "Ly hôn/Khác"])
     
@@ -92,11 +157,11 @@ with col2:
     
     TN = st.number_input("Tổng thu nhập hàng tháng của bạn (Triệu đồng):", min_value=0.0, value=30.0, step=5.0)
     SNPT = st.number_input("Số người bạn đang nuôi nấng/phụ thuộc trong gia đình (Người):", min_value=0, value=1, step=1)
-    PTMC = st.number_input("Số tiền bạn đang phải trả nợ hàng tháng cho các tổ chức tín dụng khác nếu có (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
+    PTMC = st.number_input("Số tiền bạn đang phải trả nợ hàng tháng cho các tổ chức tín dụng khác (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
     
-    st.markdown("**📌 Lịch sử vay mượn & Trả nợ cũ của bạn:**")
+    st.markdown("<br><b>📌 Lịch sử vay mượn & Trả nợ cũ của bạn:</b>", unsafe_allow_html=True)
     tinh_trang_no = st.selectbox(
-        "Hiện tại, các khoản vay cũ của bạn (bao gồm cả thẻ tín dụng, mua trả góp) có bị trễ hạn không?",
+        "Hiện tại, các khoản vay cũ của bạn có bị trễ hạn không?",
         [
             "Tôi luôn trả nợ đúng hạn / Chưa từng vay mượn ai",
             "Tôi đang có khoản nợ bị quá hạn dưới 90 ngày chưa kịp thanh toán",
@@ -104,7 +169,6 @@ with col2:
         ]
     )
     
-    # Ánh xạ câu trả lời sang Nhóm nợ CIC kỹ thuật
     if tinh_trang_no == "Tôi luôn trả nợ đúng hạn / Chưa từng vay mượn ai":
         CIC = "Nhóm 1 - Nợ đủ tiêu chuẩn"
     elif tinh_trang_no == "Tôi đang có khoản nợ bị quá hạn dưới 90 ngày chưa kịp thanh toán":
@@ -113,11 +177,10 @@ with col2:
         CIC = "Nhóm 3 đến 5 - Nợ xấu"
 
     so_lan_tra_cham = st.number_input(
-        "Trong vòng 1 năm qua, bạn đã từng đóng tiền trễ (dù chỉ trễ vài ngày) bao nhiêu lần?", 
+        "Trong vòng 1 năm qua, bạn đã từng đóng tiền trễ bao nhiêu lần?", 
         min_value=0, value=0, step=1
     )
     
-    ly_do_tra_cham = "Không có trả chậm"
     if so_lan_tra_cham > 0 or CIC != "Nhóm 1 - Nợ đủ tiêu chuẩn":
         ly_do_tra_cham = st.selectbox(
             "Nguyên nhân chính dẫn đến việc bạn thanh toán trễ hạn là gì?",
@@ -136,10 +199,13 @@ with col2:
         }
         ly_do_chuyen_doi = ly_do_mapping[ly_do_tra_cham]
     else:
+        ly_do_tra_cham = "Không có trả chậm"
         ly_do_chuyen_doi = "Không có trả chậm"
+        
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# PHẦN 3: TÍNH TOÁN DÒNG TIỀN DỰ KIẾN KỲ ĐẦU (REAL-TIME)
+# HÀNH ĐỘNG DÒNG TIỀN DỰ KIẾN KỲ ĐẦU (REAL-TIME)
 # ==============================================================================
 TG_Thang = TGV * 12
 if TG_Thang > 0:
@@ -160,14 +226,10 @@ else:
 
 st.info(f"💡 **Ước tính số tiền bạn cần trả hằng tháng (Kỳ đầu tiên):** `{PTMM:.2f}` Triệu đồng/tháng (Tiền Gốc cố định: {Goc_Hang_Thang:.2f} tr, Tiền Lãi tháng đầu: {PTMM - Goc_Hang_Thang:.2f} tr)")
 
-st.markdown("---")
-
 # ==============================================================================
-# PHẦN 4: LOGIC THẨM ĐỊNH VÀ PHÊ DUYỆT TỰ ĐỘNG KHI BẤM NÚT
+# PHẦN 4: LOGIC THẨM ĐỊNH VÀ PHÊ DUYỆT TỰ ĐỘNG
 # ==============================================================================
 if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
-    
-    # Kiểm tra tính hợp lệ của thông tin cá nhân trước khi xử lý tài chính
     if not ho_ten.strip():
         st.error("❌ Vui lòng nhập Họ và Tên của bạn.")
     elif len(cccd.strip()) != 12 or not cccd.strip().isdigit():
@@ -176,10 +238,8 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
         st.error("❌ Vui lòng cung cấp Địa chỉ cư trú hiện tại.")
     else:
         try:
-            # Tổng nghĩa vụ tài chính phải trả hàng tháng
+            # Tính toán các chỉ số tài chính
             Tong_No_Phai_Tra = PTMM + PTMC
-            
-            # Định mức chi phí sinh hoạt (Triệu đồng) quy đổi thực tế ngân hàng
             CPSH_BAN_THAN = 5.0
             CPSH_PHU_THUOC = 3.5
             tong_chi_phi_sinh_hoat = CPSH_BAN_THAN + (SNPT * CPSH_PHU_THUOC)
@@ -189,7 +249,9 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
             LTV = STV / GTTSDB if GTTSDB > 0 else 0.0
             Tich_Luy_Con_Lai = thu_nhap_rong - PTMM
 
-            # Giao diện Tabs phân tách thông tin chuyên nghiệp
+            # Hiển thị khu vực kết quả đẹp đẽ với Card
+            st.markdown('<div class="custom-card">', unsafe_allow_html=True)
+            
             tab1, tab2, tab3 = st.tabs(["📈 Kết quả xét duyệt sơ bộ", "📋 Chi tiết hồ sơ và dòng tiền", "💡 Khuyên dùng từ ngân hàng"])
             
             with tab1:
@@ -208,8 +270,6 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
                 
                 # --- KHỐI LOGIC CHẶN CỨNG (POLICY RULES) ---
                 rejection_reasons = []
-                
-                # Kiểm tra luật rủi ro CIC
                 if CIC == "Nhóm 3 đến 5 - Nợ xấu":
                     rejection_reasons.append("Bạn hiện đang có khoản nợ bị quá hạn quá lâu (trên 90 ngày). Ngân hàng không thể cấp thêm khoản vay mới khi nợ cũ chưa giải quyết.")
                 if CIC == "Nhóm 2 - Nợ cần chú ý":
@@ -222,7 +282,6 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
                 if CIC == "Nhóm 1 - Nợ đủ tiêu chuẩn" and so_lan_tra_cham > 5:
                     rejection_reasons.append(f"Mặc dù bạn đã đóng đủ nợ cũ, nhưng việc nộp trễ quá nhiều lần ({so_lan_tra_cham} lần) khiến hệ thống đánh giá thấp mức độ uy tín dòng tiền.")
 
-                # Kiểm tra luật rủi ro tài chính
                 if DTI > 0.70:
                     rejection_reasons.append(f"Tổng số tiền trả nợ mỗi tháng (cũ + mới) chiếm đến {DTI * 100:.2f}% thu nhập của bạn. Áp lực trả nợ quá lớn, vượt ngưỡng an toàn (70%).")
                 if "Không cần tài sản" not in loai_vay and LTV > 0.70:
@@ -236,7 +295,6 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
                 if "Lao động tự do" in nghe_nghiep and "Không cần tài sản" in loai_vay:
                     rejection_reasons.append("Hình thức vay tín chấp yêu cầu bắt buộc khách hàng phải có nguồn thu nhập ổn định từ lương có hợp đồng rõ ràng.")
 
-                # Đưa ra thông báo cuối cùng cho Khách hàng
                 if len(rejection_reasons) == 0:
                     st.success("🎉 **CHÚC MỪNG! HỒ SƠ ĐỦ ĐIỀU KIỆN SƠ TUYỂN (APPROVED)**")
                     st.balloons()
@@ -281,6 +339,8 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
                     st.warning("⚠️ Bạn nên làm hồ sơ 'Đồng vay' cùng Vợ/Chồng của mình để cộng gộp thu nhập, giúp hồ sơ dễ duyệt hơn.")
                 if len(rejection_reasons) == 0 and so_lan_tra_cham == 0:
                     st.write("✅ Bạn có lịch sử tài chính tuyệt vời! Hãy tiếp tục duy trì thói quen chi tiêu đúng hạn này.")
+            
+            st.markdown('</div>', unsafe_allow_html=True)
                                     
         except ZeroDivisionError:
             st.error("❌ Có lỗi xảy ra trong quá trình tính toán. Vui lòng kiểm tra lại số liệu tài sản hoặc thời gian vay.")
