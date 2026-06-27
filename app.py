@@ -2,7 +2,7 @@
 
 Cách tiếp cận này giúp ứng dụng cực kỳ gọn gàng, mang tính tương tác cao và chuyên nghiệp như một hệ thống Core-Banking thực thụ.
 
-🌟 Mã nguồn Streamlit Giao diện Ngân hàng Số Thế hệ mới
+#🌟 Mã nguồn Streamlit Giao diện Ngân hàng Số Thế hệ mới
 Python
 import streamlit as st
 
