@@ -6,7 +6,7 @@ import streamlit as st
 st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - THUY HOAI", layout="wide")
 
 # Đường link Logo (Có thể thay thế bằng link logo Trường hoặc Ngân hàng của bạn)
-URL_LOGO = "hình bìa app.jpg" 
+URL_LOGO = "tài chính.png" 
 
 # Hiển thị Logo và thông tin tại thanh Sidebar bên trái
 st.sidebar.image(URL_LOGO, use_container_width=True)
