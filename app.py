@@ -177,7 +177,9 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
             CPSH_BAN_THAN = 5.0
             CPSH_PHU_THUOC = 3.5
             tong_chi_phi_sinh_hoat = CPSH_BAN_THAN + (SNPT * CPSH_PHU_THUOC)
-            thu_nhap_rong = TN - tongue_chi_phi_sinh_hoat
+            
+            # ĐÃ SỬA LỖI TẠI ĐÂY: Thay tongue_chi_phi_sinh_hoat bằng tong_chi_phi_sinh_hoat
+            thu_nhap_rong = TN - tong_chi_phi_sinh_hoat
             
             DTI = Tong_No_Phai_Tra / TN if TN > 0 else 1.0
             LTV = STV / GTTSDB if GTTSDB > 0 else 0.0
