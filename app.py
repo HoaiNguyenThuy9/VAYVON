@@ -22,6 +22,10 @@ st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký
 st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
 st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
 
+# THÊM HÌNH ẢNH BÌA TẠI ĐÂY
+# Thiết lập use_container_width=True giúp ảnh tự động co giãn theo độ rộng màn hình
+st.image("bìa.jpg", use_container_width=True)
+
 st.markdown("---")
 
 # ==============================================================================
@@ -48,7 +52,7 @@ with col1:
     st.subheader("📋 2. Nhu cầu vay vốn của bạn")
     loai_vay = st.selectbox(
         "Bạn muốn vay theo hình thức nào?", 
-        ["Vay tiêu dùng tín chấp (Không cần tài sản)", "Vay mua Ô tô (Thế chấp bằng xe)", "Vay mua Bất động sản (Thế chấp bằng đất/nhã)", "Vay sản xuất kinh doanh"]
+        ["Vay tiêu dùng tín chấp (Không cần tài sản)", "Vay mua Ô tô (Thế chấp bằng xe)", "Vay mua Bất động sản (Thế chấp bằng đất/nhà)", "Vay sản xuất kinh doanh"]
     )
     muc_dich = st.text_input("Mục đích sử dụng số tiền này cụ thể là gì?", value="Mua nhà chung cư / Chi tiêu gia đình")
     
@@ -169,7 +173,6 @@ st.markdown("---")
 # ==============================================================================
 # PHẦN 5: LOGIC THẨM ĐỊNH VÀ PHÊ DUYỆT TỰ ĐỘNG KHI BẤM NÚT
 # ==============================================================================
-# Thêm điều kiện disabled=not cam_ket: Nếu chưa tích ô cam kết, nút bấm sẽ bị mờ đi không ấn được
 if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", disabled=not cam_ket):
     
     # Kiểm tra tính hợp lệ của thông tin cá nhân trước khi xử lý tài chính
