@@ -26,14 +26,14 @@ def get_base64_image(image_path):
     return ""
 
 # ==============================================================================
-# CẤU HÌNH HÌNH NỀN MỚI & MÀU CHỮ NỔI BẬT CHO TOÀN BỘ APP (HÌNHINAL.JPG)
+# CẤU HÌNH HÌNH NỀN & MÀU CHỮ NỔI BẬT CHO TOÀN BỘ APP (XINH.JPG)
 # ==============================================================================
 img_body_base64 = get_base64_image("xinh.jpg")
 
 if img_body_base64:
     body_bg_css = f"""
     <style>
-    /* 1. Thiết lập hình nền mới cho toàn bộ ứng dụng */
+    /* 1. Thiết lập hình nền cho toàn bộ ứng dụng */
     .stApp {{
         background-image: url('data:image/jpeg;base64,{img_body_base64}');
         background-size: cover;
@@ -43,24 +43,24 @@ if img_body_base64:
     
     /* 2. Chỉnh chữ của các tiêu đề mục (Subheader) nổi bật */
     h2, h3, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {{
-        color: #1e4620 !important; 
+        color: #0a3613 !important; 
         font-weight: bold !important;
-        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9) !important; /* Đổ bóng viền trắng giúp chữ cực kỳ sắc nét */
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 1) !important; 
     }}
     
     /* 3. Chỉnh chữ của các nhãn nhập liệu (Labels) rõ ràng */
     label, [data-testid="stWidgetLabel"] p {{
-        color: #0c2310 !important; 
+        color: #08210d !important; 
         font-weight: 600 !important;
         font-size: 15px !important;
     }}
     
-    /* 4. Tạo lớp nền trắng mờ nhẹ để các form thông tin tách bạch rõ ràng trên nền ảnh */
-    div[data-testid="stForm"], .stAlert, div[data-testid="stBlock"] {{
-        background-color: rgba(255, 255, 255, 0.4) !important; 
+    /* 4. Tạo lớp nền trắng mờ nhẹ cho các phần định danh và kết quả */
+    div[data-testid="stForm"], .stAlert {{
+        background-color: rgba(255, 255, 255, 0.45) !important; 
         padding: 15px;
         border-radius: 10px;
-        backdrop-filter: blur(2px); /* Hiệu ứng kính mờ */
+        backdrop-filter: blur(3px);
     }}
     </style>
     """
@@ -114,24 +114,21 @@ with col_id3:
 st.markdown("---")
 
 # ==============================================================================
-# PHẦN 2 & 3: GIAO DIỆN NHẬP LIỆU CÓ HÌNH NỀN ẨN TRONG SUỐT (OK.JPG)
+# PHẦN 2 & 3: KHUNG VIỀN & NỀN XANH LỤC NHẸ CHO MỤC 2 VÀ MỤC 3
 # ==============================================================================
-img_section_base64 = get_base64_image("ok.jpg")
-
-if img_section_base64:
-    section_bg_css = f"""
-    <style>
-    div[data-testid="stVerticalBlock"] > div:nth-child(9) {{
-        background-image: url('data:image/jpeg;base64,{img_section_base64}');
-        background-size: cover;
-        background-position: center;
-        padding: 35px;
-        border-radius: 15px;
-        box-shadow: inset 0 0 0 2000px rgba(255, 255, 255, 0.88);
-    }}
-    </style>
-    """
-    st.markdown(section_bg_css, unsafe_allow_html=True)
+# Thiết lập CSS: Màu nền xanh lục pastel mờ kèm border xanh đậm cứng cáp bao trọn layout
+section_bg_css = """
+<style>
+div[data-testid="stVerticalBlock"] > div:nth-child(9) {
+    background-color: rgba(222, 242, 225, 0.85) !important; 
+    border: 2px solid #2e7d32 !important; 
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+</style>
+"""
+st.markdown(section_bg_css, unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
