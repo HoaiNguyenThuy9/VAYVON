@@ -19,7 +19,7 @@ st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký
 # ==============================================================================
 # TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG
 # ==============================================================================
-st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN NGÂN HÀNG TRỰC TUYẾN")
+st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
 st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
 
 st.markdown("---")
@@ -48,7 +48,7 @@ with col1:
     st.subheader("📋 2. Nhu cầu vay vốn của bạn")
     loai_vay = st.selectbox(
         "Bạn muốn vay theo hình thức nào?", 
-        ["Vay tiêu dùng tín chấp (Không cần tài sản)", "Vay mua Ô tô (Thế chấp bằng xe)", "Vay mua Bất động sản (Thế chấp bằng đất/nhà)", "Vay sản xuất kinh doanh"]
+        ["Vay tiêu dùng tín chấp (Không cần tài sản)", "Vay mua Ô tô (Thế chấp bằng xe)", "Vay mua Bất động sản (Thế chấp bằng đất/nhã)", "Vay sản xuất kinh doanh"]
     )
     muc_dich = st.text_input("Mục đích sử dụng số tiền này cụ thể là gì?", value="Mua nhà chung cư / Chi tiêu gia đình")
     
@@ -157,9 +157,20 @@ st.info(f"💡 **Ước tính số tiền bạn cần trả hằng tháng (Kỳ 
 st.markdown("---")
 
 # ==============================================================================
-# PHẦN 4: LOGIC THẨM ĐỊNH VÀ PHÊ DUYỆT TỰ ĐỘNG KHI BẤM NÚT
+# PHẦN 4: ĐIỀU KHOẢN PHÁP LÝ & BẢO MẬT DỮ LIỆU (TICK BOX)
 # ==============================================================================
-if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
+st.subheader("🔒 4. Cam kết bảo mật & Điều khoản pháp lý")
+cam_ket = st.checkbox(
+    "Tôi cam kết các thông tin trên là chính xác và đồng ý cho phép hệ thống tra cứu/xử lý dữ liệu để kiểm tra điều kiện vay vốn."
+)
+
+st.markdown("---")
+
+# ==============================================================================
+# PHẦN 5: LOGIC THẨM ĐỊNH VÀ PHÊ DUYỆT TỰ ĐỘNG KHI BẤM NÚT
+# ==============================================================================
+# Thêm điều kiện disabled=not cam_ket: Nếu chưa tích ô cam kết, nút bấm sẽ bị mờ đi không ấn được
+if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", disabled=not cam_ket):
     
     # Kiểm tra tính hợp lệ của thông tin cá nhân trước khi xử lý tài chính
     if not ho_ten.strip():
@@ -177,8 +188,6 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
             CPSH_BAN_THAN = 5.0
             CPSH_PHU_THUOC = 3.5
             tong_chi_phi_sinh_hoat = CPSH_BAN_THAN + (SNPT * CPSH_PHU_THUOC)
-            
-            # ĐÃ SỬA LỖI TẠI ĐÂY: Thay tongue_chi_phi_sinh_hoat bằng tong_chi_phi_sinh_hoat
             thu_nhap_rong = TN - tong_chi_phi_sinh_hoat
             
             DTI = Tong_No_Phai_Tra / TN if TN > 0 else 1.0
@@ -280,3 +289,7 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary"):
                                     
         except ZeroDivisionError:
             st.error("❌ Có lỗi xảy ra trong quá trình tính toán. Vui lòng kiểm tra lại số liệu tài sản hoặc thời gian vay.")
+
+# Hiển thị cảnh báo trực quan nếu chưa check vào cam kết bảo mật
+if not cam_ket:
+    st.info("⚠️ Bạn cần tích chọn ô 'Cam kết và đồng ý điều khoản bảo mật' ở mục 4 để kích hoạt nút gửi hồ sơ.")
