@@ -28,7 +28,7 @@ def get_base64_image(image_path):
 # ==============================================================================
 # CẤU HÌNH HÌNH NỀN MỚI & MÀU CHỮ NỔI BẬT CHO TOÀN BỘ APP (HÌNHINAL.JPG)
 # ==============================================================================
-img_body_base64 = get_base64_image("HÌNHINAL.jpg")
+img_body_base64 = get_base64_image("xinh.jpg")
 
 if img_body_base64:
     body_bg_css = f"""
