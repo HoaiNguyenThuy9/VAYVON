@@ -18,42 +18,81 @@ st.sidebar.info("Cổng Đăng Ký Khoản Vay Tự Động\n\n NHÓM 6")
 st.sidebar.markdown("---")
 st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký vay trực tuyến của Khách hàng.")
 
-# ==============================================================================
-# TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG (HACK BANNER BACKGROUND)
-# ==============================================================================
+# Hàm mã hóa ảnh sang chuỗi base64
 def get_base64_image(image_path):
     if os.path.exists(image_path):
         with open(image_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode()
     return ""
 
-# Mã hóa ảnh nền bìa.jpg sang chuỗi base64 để nhúng vào CSS
-img_base64 = get_base64_image("bìa.jpg")
+# ==============================================================================
+# CẤU HÌNH HÌNH NỀN MỚI & MÀU CHỮ NỔI BẬT CHO TOÀN BỘ APP (HÌNHINAL.JPG)
+# ==============================================================================
+img_body_base64 = get_base64_image("HÌNHINAL.jpg")
 
-if img_base64:
-    # Tạo khối Banner HTML có chữ đè lên ảnh nền bìa.jpg
-    banner_html = f"""
-    <div style="
-        background-image: url('data:image/jpeg;base64,{img_base64}');
+if img_body_base64:
+    body_bg_css = f"""
+    <style>
+    /* 1. Thiết lập hình nền mới cho toàn bộ ứng dụng */
+    .stApp {{
+        background-image: url('data:image/jpeg;base64,{img_body_base64}');
         background-size: cover;
         background-position: center;
-        padding: 40px 20px;
+        background-attachment: fixed;
+    }}
+    
+    /* 2. Chỉnh chữ của các tiêu đề mục (Subheader) nổi bật */
+    h2, h3, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {{
+        color: #1e4620 !important; 
+        font-weight: bold !important;
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9) !important; /* Đổ bóng viền trắng giúp chữ cực kỳ sắc nét */
+    }}
+    
+    /* 3. Chỉnh chữ của các nhãn nhập liệu (Labels) rõ ràng */
+    label, [data-testid="stWidgetLabel"] p {{
+        color: #0c2310 !important; 
+        font-weight: 600 !important;
+        font-size: 15px !important;
+    }}
+    
+    /* 4. Tạo lớp nền trắng mờ nhẹ để các form thông tin tách bạch rõ ràng trên nền ảnh */
+    div[data-testid="stForm"], .stAlert, div[data-testid="stBlock"] {{
+        background-color: rgba(255, 255, 255, 0.4) !important; 
+        padding: 15px;
         border-radius: 10px;
+        backdrop-filter: blur(2px); /* Hiệu ứng kính mờ */
+    }}
+    </style>
+    """
+    st.markdown(body_bg_css, unsafe_allow_html=True)
+
+# ==============================================================================
+# TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG (HACK BANNER BACKGROUND)
+# ==============================================================================
+img_banner_base64 = get_base64_image("bìa.jpg")
+
+if img_banner_base64:
+    banner_html = f"""
+    <div style="
+        background-image: url('data:image/jpeg;base64,{img_banner_base64}');
+        background-size: cover;
+        background-position: center;
+        padding: 45px 20px;
+        border-radius: 12px;
         text-align: center;
         margin-bottom: 25px;
-        box-shadow: inset 0 0 0 2000px rgba(0, 50, 30, 0.3); /* Phủ một lớp mờ nhẹ để chữ dễ đọc hơn */
+        box-shadow: inset 0 0 0 2000px rgba(10, 50, 20, 0.4);
     ">
-        <h1 style="color: #ffffff; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); margin-bottom: 10px;">
+        <h1 style="color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; font-size: 34px; font-weight: 800; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); margin-bottom: 12px; letter-spacing: 0.5px;">
             🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN
         </h1>
-        <p style="color: #f0fdf4; font-family: Arial, sans-serif; font-size: 16px; font-weight: 500; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); margin: 0;">
+        <p style="color: #e8f5e9; font-family: Arial, sans-serif; font-size: 17px; font-weight: 600; text-shadow: 1px 1px 4px rgba(0,0,0,0.7); margin: 0;">
             Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.
         </p>
     </div>
     """
     st.markdown(banner_html, unsafe_allow_html=True)
 else:
-    # Trường hợp không tìm thấy file ảnh thì hiển thị text mặc định để app không bị lỗi
     st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
     st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
 
@@ -75,8 +114,25 @@ with col_id3:
 st.markdown("---")
 
 # ==============================================================================
-# PHẦN 2: GIAO DIỆN NHẬP LIỆU TÀI CHÍNH & KHOẢN VAY (CHIA THÀNH 2 CỘT)
+# PHẦN 2 & 3: GIAO DIỆN NHẬP LIỆU CÓ HÌNH NỀN ẨN TRONG SUỐT (OK.JPG)
 # ==============================================================================
+img_section_base64 = get_base64_image("ok.jpg")
+
+if img_section_base64:
+    section_bg_css = f"""
+    <style>
+    div[data-testid="stVerticalBlock"] > div:nth-child(9) {{
+        background-image: url('data:image/jpeg;base64,{img_section_base64}');
+        background-size: cover;
+        background-position: center;
+        padding: 35px;
+        border-radius: 15px;
+        box-shadow: inset 0 0 0 2000px rgba(255, 255, 255, 0.88);
+    }}
+    </style>
+    """
+    st.markdown(section_bg_css, unsafe_allow_html=True)
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -91,7 +147,6 @@ with col1:
     TGV = st.number_input("Thời gian bạn muốn trả góp (Số năm):", min_value=0.5, value=5.0, step=0.5)
     LSV = st.number_input("Lãi suất ước tính (%/năm):", min_value=0.0, max_value=50.0, value=10.0, step=0.5) / 100
     
-    # Ẩn/hiện ô nhập tài sản đảm bảo tùy thuộc vào loại hình vay
     if "Không cần tài sản" in loai_vay:
         GTTSDB = 0.0
         st.caption("ℹ️ Bạn đang chọn vay tín chấp, không cần kê khai giá trị tài sản đảm bảo.")
@@ -140,7 +195,6 @@ with col2:
         ]
     )
     
-    # Ánh xạ câu trả lời sang Nhóm nợ CIC kỹ thuật
     if tinh_trang_no in ["Chưa từng vay mượn ai", "Đã vay và luôn trả nợ đúng hạn"]:
         CIC = "Nhóm 1 - Nợ đủ tiêu chuẩn"
     elif tinh_trang_no == "Có nợ quá hạn từ 10 đến 90 ngày":
@@ -175,7 +229,7 @@ with col2:
         ly_do_chuyen_doi = "Không có trả chậm"
 
 # ==============================================================================
-# PHẦN 3: TÍNH TOÁN DÒNG TIỀN DỰ KIẾN KỲ ĐẦU (REAL-TIME) - CHỈ TÍNH THEO GỐC ĐỀU LÃI GIẢM DẦN
+# PHẦN 3: TÍNH TOÁN DÒNG TIỀN DỰ KIẾN KỲ ĐẦU (REAL-TIME)
 # ==============================================================================
 TG_Thang = TGV * 12
 if TG_Thang > 0:
@@ -206,7 +260,6 @@ st.markdown("---")
 # ==============================================================================
 if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", disabled=not cam_ket):
     
-    # Kiểm tra tính hợp lệ của thông tin cá nhân trước khi xử lý tài chính
     if not ho_ten.strip():
         st.error("❌ Vui lòng nhập Họ và Tên của bạn.")
     elif len(cccd.strip()) != 12 or not cccd.strip().isdigit():
@@ -215,10 +268,7 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
         st.error("❌ Vui lòng cung cấp Địa chỉ cư trú hiện tại.")
     else:
         try:
-            # Tổng nghĩa vụ tài chính phải trả hàng tháng
             Tong_No_Phai_Tra = PTMM + PTMC
-            
-            # Định mức chi phí sinh hoạt (Triệu đồng) quy đổi thực tế ngân hàng
             CPSH_BAN_THAN = 5.0
             CPSH_PHU_THUOC = 3.5
             tong_chi_phi_sinh_hoat = CPSH_BAN_THAN + (SNPT * CPSH_PHU_THUOC)
@@ -228,11 +278,10 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
             LTV = STV / GTTSDB if GTTSDB > 0 else 0.0
             Tich_Luy_Con_Lai = thu_nhap_rong - PTMM
 
-            # Giao diện Tabs phân tách thông tin chuyên nghiệp
             tab1, tab2, tab3 = st.tabs(["📈 Kết quả xét duyệt sơ bộ", "📋 Chi tiết hồ sơ và dòng tiền", "💡 Khuyên dùng từ ngân hàng"])
             
             with tab1:
-                st.write(f"### Xin chào Khách hàng: **{ho_ten.upper()}** (CCCD: `{cccd}`)")
+                st.markdown(f"### Xin chào Khách hàng: **{ho_ten.upper()}** (CCCD: `{cccd}`)")
                 st.write("Các chỉ số an toàn tài chính cá nhân của bạn:")
                 m1, m2, m3 = st.columns(3)
                 m1.metric(label="Tỷ lệ nợ trên thu nhập (DTI)", value=f"{DTI * 100:.2f}%", delta="Mục tiêu: ≤ 70%")
@@ -243,12 +292,10 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
                 m3.metric(label="Số tuổi của bạn", value=f"{STKH} tuổi", delta="Quy định: 18 - 70 tuổi")
                 
                 st.markdown("---")
-                st.write("### 🏁 KẾT QUẢ ĐÁNH GIÁ TỰ ĐỘNG:")
+                st.markdown("### 🏁 KẾT QUẢ ĐÁNH GIÁ TỰ ĐỘNG:")
                 
-                # --- KHỐI LOGIC CHẶN CỨNG (POLICY RULES) ---
                 rejection_reasons = []
                 
-                # Kiểm tra luật rủi ro CIC
                 if CIC == "Nhóm 3 đến 5 - Nợ xấu":
                     rejection_reasons.append("Bạn hiện đang có khoản nợ bị quá hạn quá lâu (trên 90 ngày). Ngân hàng không thể cấp thêm khoản vay mới khi nợ cũ chưa giải quyết.")
                 if CIC == "Nhóm 2 - Nợ cần chú ý":
@@ -261,7 +308,6 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
                 if CIC == "Nhóm 1 - Nợ đủ tiêu chuẩn" and so_lan_tra_cham > 5:
                     rejection_reasons.append(f"Mặc dù bạn đã đóng đủ nợ cũ, nhưng việc nộp trễ quá nhiều lần ({so_lan_tra_cham} lần) khiến hệ thống đánh giá thấp mức độ uy tín dòng tiền.")
 
-                # Kiểm tra luật rủi ro tài chính
                 if DTI > 0.70:
                     rejection_reasons.append(f"Tổng số tiền trả nợ mỗi tháng (cũ + mới) chiếm đến {DTI * 100:.2f}% thu nhập của bạn. Áp lực trả nợ quá lớn, vượt ngưỡng an toàn (70%).")
                 if "Không cần tài sản" not in loai_vay and LTV > 0.70:
@@ -275,7 +321,6 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
                 if "Lao động tự do" in nghe_nghiep and "Không cần tài sản" in loai_vay:
                     rejection_reasons.append("Hình thức vay tín chấp yêu cầu bắt buộc khách hàng phải có nguồn thu nhập ổn định từ lương có hợp đồng rõ ràng.")
 
-                # Đưa ra thông báo cuối cùng cho Khách hàng
                 if len(rejection_reasons) == 0:
                     st.success("🎉 **CHÚC MỪNG! HỒ SƠ ĐỦ ĐIỀU KIỆN SƠ TUYỂN (APPROVED)**")
                     st.balloons()
@@ -287,7 +332,7 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
                         st.write(f"- {reason}")
                         
             with tab2:
-                st.write("### Chi tiết thông tin đăng ký hồ sơ:")
+                st.markdown("### Chi tiết thông tin đăng ký hồ sơ:")
                 c_info1, c_info2 = st.columns(2)
                 with c_info1:
                     st.write(f"- **Họ và tên:** {ho_ten}")
@@ -302,14 +347,14 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
                     st.write(f"- **Nguyên nhân chậm đóng (nếu có):** {ly_do_tra_cham}")
 
                 st.markdown("---")
-                st.write("### Bản tóm tắt dòng tiền hàng tháng của bạn:")
+                st.markdown("### Bản tóm tắt dòng tiền hàng tháng của bạn:")
                 st.write(f"- 💵 **Tiền trả định kỳ cho khoản vay mới này (Kỳ đầu):** `{PTMM:.2f}` Triệu đồng/tháng")
                 st.write(f"- 💳 **Tiền trả cho các khoản nợ cũ khác (nếu có):** `{PTMC:.2f}` Triệu đồng/tháng")
                 st.write(f"- 💸 **Ước tính chi phí ăn ở, sinh hoạt tối thiểu của gia đình:** `{tong_chi_phi_sinh_hoat:.2f}` Triệu đồng/tháng")
                 st.write(f"- 📈 **Số tiền thặng dư còn lại để tích lũy/dự phòng:** `{Tich_Luy_Con_Lai:.2f}` Triệu đồng/tháng")
 
             with tab3:
-                st.write("### Lời khuyên tài chính dành cho bạn:")
+                st.markdown("### Lời khuyên tài chính dành cho bạn:")
                 if DTI > 0.50 and DTI <= 0.70:
                     st.warning("⚠️ Khoản nợ này đang chiếm hơn một nửa thu nhập hằng tháng của bạn. Bạn nên cân nhắc kéo dài thời gian vay để giảm bớt tiền phải đóng mỗi tháng.")
                 if "Lý do khách quan" in ly_do_chuyen_doi:
@@ -324,6 +369,5 @@ if st.button("📊 Gửi hồ sơ và Kiểm tra kết quả", type="primary", d
         except ZeroDivisionError:
             st.error("❌ Có lỗi xảy ra trong quá trình tính toán. Vui lòng kiểm tra lại số liệu tài sản hoặc thời gian vay.")
 
-# Hiển thị cảnh báo trực quan nếu chưa check vào cam kết bảo mật
 if not cam_ket:
     st.info("⚠️ Bạn cần tích chọn ô 'Cam kết và đồng ý điều khoản bảo mật' ở mục 4 để kích hoạt nút gửi hồ sơ.")
