@@ -1,4 +1,6 @@
 import streamlit as st
+import base64
+import os
 
 # ==============================================================================
 # CẤU HÌNH TRANG WEB & LOGO
@@ -17,14 +19,43 @@ st.sidebar.markdown("---")
 st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký vay trực tuyến của Khách hàng.")
 
 # ==============================================================================
-# TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG
+# TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG (HACK BANNER BACKGROUND)
 # ==============================================================================
-st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
-st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
+def get_base64_image(image_path):
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    return ""
 
-# THÊM HÌNH ẢNH BÌA TẠI ĐÂY
-# Thiết lập use_container_width=True giúp ảnh tự động co giãn theo độ rộng màn hình
-st.image("bìa.jpg", use_container_width=True)
+# Mã hóa ảnh nền bìa.jpg sang chuỗi base64 để nhúng vào CSS
+img_base64 = get_base64_image("bìa.jpg")
+
+if img_base64:
+    # Tạo khối Banner HTML có chữ đè lên ảnh nền bìa.jpg
+    banner_html = f"""
+    <div style="
+        background-image: url('data:image/jpeg;base64,{img_base64}');
+        background-size: cover;
+        background-position: center;
+        padding: 40px 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 25px;
+        box-shadow: inset 0 0 0 2000px rgba(0, 50, 30, 0.3); /* Phủ một lớp mờ nhẹ để chữ dễ đọc hơn */
+    ">
+        <h1 style="color: #ffffff; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); margin-bottom: 10px;">
+            🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN
+        </h1>
+        <p style="color: #f0fdf4; font-family: Arial, sans-serif; font-size: 16px; font-weight: 500; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); margin: 0;">
+            Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.
+        </p>
+    </div>
+    """
+    st.markdown(banner_html, unsafe_allow_html=True)
+else:
+    # Trường hợp không tìm thấy file ảnh thì hiển thị text mặc định để app không bị lỗi
+    st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
+    st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
 
 st.markdown("---")
 
