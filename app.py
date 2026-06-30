@@ -19,7 +19,7 @@ st.sidebar.caption("Ứng dụng tự động thẩm định hồ sơ đăng ký
 # ==============================================================================
 # TIÊU ĐỀ CHÍNH CỦA ỨNG DỤNG
 # ==============================================================================
-st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN TRỰC TUYẾN")
+st.title("🏦 ĐĂNG KÝ VÀ KIỂM TRA ĐIỀU KIỆN VAY VỐN NGÂN HÀNG TRỰC TUYẾN")
 st.write("Vui lòng điền đầy đủ và trung thực các thông tin dưới đây. Hệ thống sẽ tự động chấm điểm và trả kết quả sau 3 giây.")
 
 st.markdown("---")
