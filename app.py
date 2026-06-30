@@ -55,7 +55,7 @@ if img_body_base64:
         font-size: 15px !important;
     }}
     
-    /* 4. Tạo lớp nền trắng mờ nhẹ cho các phần định danh và kết quả */
+    /* 4. Tạo lớp nền trắng mờ nhẹ cho các phần nhập liệu chung để dễ đọc chữ */
     div[data-testid="stForm"], .stAlert {{
         background-color: rgba(255, 255, 255, 0.45) !important; 
         padding: 15px;
@@ -114,22 +114,8 @@ with col_id3:
 st.markdown("---")
 
 # ==============================================================================
-# PHẦN 2 & 3: KHUNG VIỀN & NỀN XANH LỤC NHẸ CHO MỤC 2 VÀ MỤC 3
+# PHẦN 2 & 3: GIAO DIỆN NHẬP LIỆU (ĐÃ LOẠI BỎ HOÀN TOÀN KHUNG VIỀN XANH ĐẬM)
 # ==============================================================================
-# Thiết lập CSS: Màu nền xanh lục pastel mờ kèm border xanh đậm cứng cáp bao trọn layout
-section_bg_css = """
-<style>
-div[data-testid="stVerticalBlock"] > div:nth-child(9) {
-    background-color: rgba(222, 242, 225, 0.85) !important; 
-    border: 2px solid #2e7d32 !important; 
-    padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-</style>
-"""
-st.markdown(section_bg_css, unsafe_allow_html=True)
-
 col1, col2 = st.columns(2)
 
 with col1:
@@ -226,7 +212,7 @@ with col2:
         ly_do_chuyen_doi = "Không có trả chậm"
 
 # ==============================================================================
-# PHẦN 3: TÍNH TOÁN DÒNG TIỀN DỰ KIẾN KỲ ĐẦU (REAL-TIME)
+# PHẦN 3: TÍNH TOÁN DÒNG TIỀN DỰ KIẾN KÝ ĐẦU (REAL-TIME)
 # ==============================================================================
 TG_Thang = TGV * 12
 if TG_Thang > 0:
