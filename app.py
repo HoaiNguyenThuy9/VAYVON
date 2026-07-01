@@ -164,7 +164,7 @@ with col2:
     nghe_nghiep = nghe_nghiep_mapping[nghe_chon]
     
     TN = st.number_input("Tổng thu nhập hàng tháng của bạn (Triệu đồng):", min_value=0.0, value=30.0, step=5.0)
-    SNPT = st.number_input("Số người bạn đang nuôi nấng/phụ thuộc trong gia đình (Người):", min_value=0, value=1, step=1)
+    SNPT = st.number_input("Số người phụ thuộc trong gia đình (Người):", min_value=0, value=1, step=1)
     PTMC = st.number_input("Số tiền bạn đang phải trả nợ hàng tháng cho các tổ chức tín dụng khác nếu có (Triệu đồng):", min_value=0.0, value=0.0, step=1.0)
     
     st.markdown("**📌 Lịch sử vay mượn & Trả nợ cũ của bạn:**")
