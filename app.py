@@ -5,7 +5,7 @@ import os
 # ==============================================================================
 # CẤU HÌNH TRANG WEB & LOGO
 # ==============================================================================
-st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - THUY HOAI", layout="wide")
+st.set_page_config(page_title="APP CHO VAY ONLINE KHCN - ĐỀ TÀI NHÓM 6", layout="wide")
 
 # Đường link Logo (Có thể thay thế bằng link logo Trường hoặc Ngân hàng của bạn)
 URL_LOGO = "tài chính.png" 
